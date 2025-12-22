@@ -10,42 +10,126 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial', Helvetica, sans-serif;
         }
         
         body {
-            background-color: #f5f7fa;
-            color: #333;
+            background: #E3E3E3;
+           
+            color: white !important;
+        }
+        
+        /* BARRA SUPERIOR MARRÓN (#450016) */
+        .top-bar {
+            background-color: #122db3 !important; /* Color marrón específico */
+            background: radial-gradient(circle, rgba(18, 45, 179, 1) 0%, rgba(19, 25, 56, 1) 100%);
+            color: white !important;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Logo en la barra superior */
+        .top-bar-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .top-bar-logo h1 {
+            color: white !important;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        top-bar-logo span {
+            color: #ffcc00 !important; /* Color dorado para contraste */
+        }.
+        
+        /* Información del usuario en barra superior */
+        .top-user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .top-user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7b112f, #5a0c22);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #E3E3E3 !important;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid rgba(87, 81, 81, 0.3);
+        }
+        
+        .user-details {
+            text-align: right;
+        }
+        
+        .user-details .user-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white !important;
+        }
+        
+        .user-details .user-role {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+        
+        /* Esto cambia TODOS los textos a blanco (excepto lo especificado) */
+        body, body *:not(.status-badge):not(.empresa-badge) {
+            color: black !important;
+        }
+        
+        /* Excepciones para badges (mantienen sus colores) */
+        .status-badge, .empresa-badge {
+            color: inherit !important;
         }
         
         .container {
             display: flex;
-            min-height: 100vh;
+            min-height: calc(100vh - 75px); /* Resta la altura de la barra superior */
         }
         
         /* Sidebar */
         .sidebar {
             width: 250px;
-            background: linear-gradient(to bottom, #2c3e50, #34495e);
+            background: linear-gradient(to bottom, #9C9C9C, #7f7f7f);
             color: white;
             padding: 20px 0;
-            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+            box-shadow: 3px 0 10px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
         }
         
         .logo {
             text-align: center;
             padding: 20px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.15);
             margin-bottom: 30px;
         }
         
         .logo h2 {
             font-size: 1.5rem;
             font-weight: 600;
+            color: white !important;
         }
         
         .logo span {
-            color: #3498db;
+            color: #ffcc00 !important; /* Dorado para contraste */
         }
         
         .menu {
@@ -61,20 +145,21 @@
             display: flex;
             align-items: center;
             padding: 12px 15px;
-            color: #bdc3c7;
+            color: rgba(255,255,255,0.8) !important;
             text-decoration: none;
             border-radius: 8px;
             transition: all 0.3s ease;
         }
         
         .menu-link:hover, .menu-link.active {
-            background-color: rgba(52, 152, 219, 0.2);
-            color: white;
+            background-color: rgba(255, 204, 0, 0.2); /* Dorado translúcido */
+            color: white !important;
         }
         
         .menu-link i {
             margin-right: 10px;
             font-size: 1.2rem;
+            color: white !important;
         }
         
         /* Main Content */
@@ -82,51 +167,31 @@
             flex: 1;
             padding: 20px;
             overflow-y: auto;
+            color: white !important;
         }
         
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .header h1 {
-            color: #2c3e50;
+        /* Título de la página dentro del contenido */
+        .page-title {
+            color: white !important;
             font-size: 1.8rem;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #3498db;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
         
         /* Filter Section */
         .filters {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 25px;
             margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
         .filters h2 {
-            color: #2c3e50;
+            color: white !important;
             margin-bottom: 20px;
             font-size: 1.4rem;
         }
@@ -145,15 +210,44 @@
         .filter-group label {
             margin-bottom: 8px;
             font-weight: 600;
-            color: #555;
+            color: rgba(255,255,255,0.9) !important;
         }
         
         .filter-control {
             padding: 12px;
-            border: 1px solid #ddd;
+            border: 1px solid rgba(255,255,255,0.2);
             border-radius: 6px;
             font-size: 1rem;
-            background-color: #f9f9f9;
+            background-color: rgba(255,255,255,0.1);
+            color: white !important;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-control:focus {
+            outline: none;
+            border-color: #ffcc00; /* Dorado para el focus */
+            box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.2);
+            background-color: rgba(255,255,255,0.15);
+        }
+        
+        .filter-control::placeholder {
+            color: rgba(255,255,255,0.6) !important;
+        }
+        
+        /* Estilo específico para selects */
+        select.filter-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            padding-right: 40px;
+        }
+        
+        /* Estilo para options */
+        .filter-control option {
+            background-color: #450016;
+            color: white !important;
         }
         
         .date-range {
@@ -179,24 +273,26 @@
             align-items: center;
             gap: 8px;
             transition: all 0.3s ease;
+            color: white !important;
         }
         
         .btn-primary {
-            background-color: #3498db;
-            color: white;
+         background-color: #7b112f; /* Vino */
+        color: #ffffff;
         }
-        
+
         .btn-primary:hover {
-            background-color: #2980b9;
+        background-color: #5a0c22; /* Vino oscuro */
         }
+
         
         .btn-secondary {
-            background-color: #f1f1f1;
-            color: #333;
+            background-color: rgba(255,255,255,0.2);
+            color: white !important;
         }
         
         .btn-secondary:hover {
-            background-color: #e0e0e0;
+            background-color: rgba(255,255,255,0.3);
         }
         
         /* Data Summary */
@@ -208,43 +304,52 @@
         }
         
         .summary-card {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .summary-card:hover {
+            transform: translateY(-5px);
         }
         
         .summary-card i {
             font-size: 2.5rem;
             margin-bottom: 15px;
-            color: #3498db;
+            color: #ffcc00 !important; /* Dorado */
         }
         
         .summary-card h3 {
             font-size: 2rem;
-            color: #2c3e50;
+            color: white !important;
             margin-bottom: 5px;
         }
         
         .summary-card p {
-            color: #7f8c8d;
+            color: rgba(255,255,255,0.8) !important;
             font-size: 0.9rem;
         }
         
         /* Table Preview */
         .table-preview {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
         .table-preview h2 {
-            color: #2c3e50;
+            color: white !important;
             margin-bottom: 20px;
             font-size: 1.4rem;
         }
@@ -252,27 +357,29 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            color: white !important;
         }
         
         table thead {
-            background-color: #f8f9fa;
+            background-color: rgba(69, 0, 22, 0.4); /* Tono marrón translúcido */
         }
         
         table th {
             padding: 15px;
             text-align: left;
-            color: #2c3e50;
+            color: white !important;
             font-weight: 600;
-            border-bottom: 2px solid #e0e0e0;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
         }
         
         table td {
             padding: 15px;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: white !important;
         }
         
         table tbody tr:hover {
-            background-color: #f9f9f9;
+            background-color: rgba(69, 0, 22, 0.2); /* Tono marrón muy translúcido */
         }
         
         .status-badge {
@@ -281,16 +388,17 @@
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
+            color: inherit !important;
         }
         
         .status-resuelto {
-            background-color: #d4edda;
-            color: #155724;
+            background-color: rgba(212, 237, 218, 0.9);
+            color: #155724 !important;
         }
         
         .status-pendiente {
-            background-color: #fff3cd;
-            color: #856404;
+            background-color: rgba(255, 243, 205, 0.9);
+            color: #856404 !important;
         }
         
         .empresa-badge {
@@ -299,8 +407,8 @@
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
-            background-color: #e3f2fd;
-            color: #1565c0;
+            background-color: rgba(227, 242, 253, 0.9);
+            color: #1565c0 !important;
         }
         
         /* Responsive */
@@ -329,6 +437,22 @@
             .menu-link span {
                 font-size: 0.9rem;
             }
+            
+            .top-bar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+                text-align: center;
+            }
+            
+            .top-user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .user-details {
+                text-align: center;
+            }
         }
         
         @media (max-width: 768px) {
@@ -354,9 +478,55 @@
                 overflow-x: auto;
             }
         }
+        
+        /* Scrollbar personalizado en tono marrón */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(69, 0, 22, 0.3);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 204, 0, 0.5);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 204, 0, 0.7);
+        }
+        
+        /* Efecto de sombra para la barra superior */
+        .top-bar::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #ffcc00, #ff9900);
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
+    <!-- BARRA SUPERIOR MARRÓN -->
+    <div class="top-bar">
+        <div class="top-bar-logo">
+            <h1>Admin<span>Incidencias</span></h1>
+        </div>
+        
+        <div class="top-user-info">
+            <div class="user-details">
+                <div class="user-name">Reportes de Incidencias</div>
+                <div class="user-role">Panel de Administración</div>
+            </div>
+            <div class="top-user-avatar">AD</div>
+        </div>
+    </div>
+
     <div class="container">
         <!-- Sidebar -->
         <aside class="sidebar">
@@ -405,16 +575,8 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <header class="header">
-                <h1>Reportes de Incidencias</h1>
-                <div class="user-info">
-                    <div class="user-avatar">AD</div>
-                    <div>
-                        <p style="font-weight: 600;">Administrador</p>
-                        <p style="font-size: 0.9rem; color: #7f8c8d;">admin@incidencias.com</p>
-                    </div>
-                </div>
-            </header>
+            <!-- Título de la página (si aún lo quieres dentro) -->
+            <h1 class="page-title">Reportes de Incidencias</h1>
 
             <!-- Filtros -->
             <section class="filters">
@@ -586,7 +748,7 @@
             alert('Filtros limpiados correctamente');
         });
         
-        document.getElementById('generar-reporte').addEventListepython -m http.serverner('click', function() {
+        document.getElementById('generar-reporte').addEventListener('click', function() {
             // Aquí normalmente se haría una llamada al servidor para generar el reporte
             // Por ahora solo simulamos la acción
             const empresa = document.getElementById('empresa').value;
@@ -621,6 +783,18 @@
                 });
             });
         }
+        
+        // Estilo para el placeholder en navegadores modernos
+        document.querySelectorAll('.filter-control').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.color = 'white';
+            });
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.style.color = 'rgba(255,255,255,0.6)';
+                }
+            });
+        });
     </script>
 </body>
 </html>
