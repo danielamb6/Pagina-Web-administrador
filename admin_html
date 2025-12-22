@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Reportes de Incidencias</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(to bottom, #2c3e50, #34495e);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .logo h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .logo span {
+            color: #3498db;
+        }
+        
+        .menu {
+            list-style: none;
+            padding: 0 20px;
+        }
+        
+        .menu-item {
+            margin-bottom: 10px;
+        }
+        
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #bdc3c7;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-link:hover, .menu-link.active {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: white;
+        }
+        
+        .menu-link i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Filter Section */
+        .filters {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .filters h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .filter-control {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: #f9f9f9;
+        }
+        
+        .date-range {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+        
+        /* Data Summary */
+        .data-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .summary-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        
+        .summary-card h3 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .summary-card p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        /* Table Preview */
+        .table-preview {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .table-preview h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table thead {
+            background-color: #f8f9fa;
+        }
+        
+        table th {
+            padding: 15px;
+            text-align: left;
+            color: #2c3e50;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-resuelto {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pendiente {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .empresa-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding: 10px 0;
+            }
+            
+            .menu {
+                display: flex;
+                overflow-x: auto;
+                padding: 10px;
+            }
+            
+            .menu-item {
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
+            
+            .menu-link span {
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Admin<span>Incidencias</span></h2>
+            </div>
+            <ul class="menu">
+                <li class="menu-item">
+                    <a href="#" class="menu-link active">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>Incidencias</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-users"></i>
+                        <span>Técnicos</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-building"></i>
+                        <span>Empresas</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-file-export"></i>
+                        <span>Reportes</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1>Reportes de Incidencias</h1>
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <div>
+                        <p style="font-weight: 600;">Administrador</p>
+                        <p style="font-size: 0.9rem; color: #7f8c8d;">admin@incidencias.com</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Filtros -->
+            <section class="filters">
+                <h2>Filtrar Reporte</h2>
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="empresa">Empresa</label>
+                        <select id="empresa" class="filter-control">
+                            <option value="">Todas las empresas</option>
+                            <option value="zoxo">Zoxo</option>
+                            <option value="codiversa">Codiversa</option>
+                            <option value="copesa">Copesa</option>
+                            <option value="sitraq">Sitraq</option>
+                            <option value="corevsa">Corevsa</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="tecnico">Técnico</label>
+                        <select id="tecnico" class="filter-control">
+                            <option value="">Todos los técnicos</option>
+                            <option value="juan_perez">Juan Pérez</option>
+                            <option value="maria_gomez">María Gómez</option>
+                            <option value="carlos_rodriguez">Carlos Rodríguez</option>
+                            <option value="ana_lopez">Ana López</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="tipo-falla">Tipo de Falla</label>
+                        <select id="tipo-falla" class="filter-control">
+                            <option value="">Todos los tipos</option>
+                            <option value="equipos">Equipos</option>
+                            <option value="elementos">Elementos</option>
+                            <option value="accesorios">Accesorios</option>
+                            <option value="conexion">Conexión/Internet</option>
+                            <option value="configuracion">Configuración</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="fecha-inicio">Rango de Fechas</label>
+                        <div class="date-range">
+                            <input type="date" id="fecha-inicio" class="filter-control" style="flex: 1;">
+                            <input type="date" id="fecha-fin" class="filter-control" style="flex: 1;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn btn-secondary" id="limpiar-filtros">
+                        <i class="fas fa-eraser"></i> Limpiar Filtros
+                    </button>
+                    <button class="btn btn-primary" id="generar-reporte">
+                        <i class="fas fa-file-export"></i> Generar Reporte
+                    </button>
+                    <button class="btn btn-primary" id="descargar-reporte">
+                        <i class="fas fa-download"></i> Descargar Reporte
+                    </button>
+                </div>
+            </section>
+
+            <!-- Resumen de Datos -->
+            <section class="data-summary">
+                <div class="summary-card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>48</h3>
+                    <p>Incidencias Totales</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-user-cog"></i>
+                    <h3>12</h3>
+                    <p>Técnicos Activos</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-building"></i>
+                    <h3>5</h3>
+                    <p>Empresas</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>3.2h</h3>
+                    <p>Tiempo Promedio</p>
+                </div>
+            </section>
+
+            <!-- Vista Previa de Datos -->
+            <section class="table-preview">
+                <h2>Vista Previa del Reporte</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Técnico</th>
+                            <th>Fecha</th>
+                            <th>Empresa</th>
+                            <th>Tiempo</th>
+                            <th>Tipo de Falla</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Juan Pérez</td>
+                            <td>15/10/2023</td>
+                            <td><span class="empresa-badge">Zoxo</span></td>
+                            <td>2.5h</td>
+                            <td>EQUIPOS - MDVR</td>
+                            <td><span class="status-badge status-resuelto">Resuelto</span></td>
+                        </tr>
+                        <tr>
+                            <td>María Gómez</td>
+                            <td>14/10/2023</td>
+                            <td><span class="empresa-badge">Codiversa</span></td>
+                            <td>4.0h</td>
+                            <td>ELEMENTOS - Cámara Operador</td>
+                            <td><span class="status-badge status-resuelto">Resuelto</span></td>
+                        </tr>
+                        <tr>
+                            <td>Carlos Rodríguez</td>
+                            <td>13/10/2023</td>
+                            <td><span class="empresa-badge">Copesa</span></td>
+                            <td>1.5h</td>
+                            <td>ACCESORIOS - Antena GPS</td>
+                            <td><span class="status-badge status-pendiente">Pendiente</span></td>
+                        </tr>
+                        <tr>
+                            <td>Ana López</td>
+                            <td>12/10/2023</td>
+                            <td><span class="empresa-badge">Sitraq</span></td>
+                            <td>3.0h</td>
+                            <td>FALLA REPORTADA - No accesa</td>
+                            <td><span class="status-badge status-resuelto">Resuelto</span></td>
+                        </tr>
+                        <tr>
+                            <td>Juan Pérez</td>
+                            <td>11/10/2023</td>
+                            <td><span class="empresa-badge">Corevsa</span></td>
+                            <td>2.0h</td>
+                            <td>SOLUCIÓN - Se restablece conexión</td>
+                            <td><span class="status-badge status-resuelto">Resuelto</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Inicializar fechas por defecto (últimos 30 días)
+        const hoy = new Date();
+        const hace30Dias = new Date();
+        hace30Dias.setDate(hoy.getDate() - 30);
+        
+        document.getElementById('fecha-inicio').value = hace30Dias.toISOString().split('T')[0];
+        document.getElementById('fecha-fin').value = hoy.toISOString().split('T')[0];
+        
+        // Eventos de los botones
+        document.getElementById('limpiar-filtros').addEventListener('click', function() {
+            document.getElementById('empresa').value = '';
+            document.getElementById('tecnico').value = '';
+            document.getElementById('tipo-falla').value = '';
+            document.getElementById('fecha-inicio').value = '';
+            document.getElementById('fecha-fin').value = '';
+            
+            // Restaurar fechas por defecto
+            document.getElementById('fecha-inicio').value = hace30Dias.toISOString().split('T')[0];
+            document.getElementById('fecha-fin').value = hoy.toISOString().split('T')[0];
+            
+            alert('Filtros limpiados correctamente');
+        });
+        
+        document.getElementById('generar-reporte').addEventListepython -m http.serverner('click', function() {
+            // Aquí normalmente se haría una llamada al servidor para generar el reporte
+            // Por ahora solo simulamos la acción
+            const empresa = document.getElementById('empresa').value;
+            const tecnico = document.getElementById('tecnico').value;
+            const tipoFalla = document.getElementById('tipo-falla').value;
+            const fechaInicio = document.getElementById('fecha-inicio').value;
+            const fechaFin = document.getElementById('fecha-fin').value;
+            
+            let mensaje = 'Generando reporte con los siguientes filtros:\n';
+            if (empresa) mensaje += `- Empresa: ${empresa}\n`;
+            if (tecnico) mensaje += `- Técnico: ${tecnico}\n`;
+            if (tipoFalla) mensaje += `- Tipo de falla: ${tipoFalla}\n`;
+            mensaje += `- Fecha inicio: ${fechaInicio || 'No especificada'}\n`;
+            mensaje += `- Fecha fin: ${fechaFin || 'No especificada'}`;
+            
+            alert(mensaje);
+        });
+        
+        document.getElementById('descargar-reporte').addEventListener('click', function() {
+            // Simulación de descarga de reporte
+            alert('Descargando reporte en formato Excel...\n\nEl archivo incluirá:\n- Técnico que atendió\n- Fecha de la incidencia\n- Empresa (Zoxo, Codiversa, Copesa, Sitraq, Corevsa)\n- Tiempo de resolución\n- Tipo de falla\n- Detalles completos de la incidencia');
+            
+            // Aquí normalmente se generaría y descargaría el archivo
+            // Por ejemplo: window.location.href = '/api/reporte/descargar?' + parametros;
+        });
+        
+        // Mejorar la experiencia de usuario en dispositivos móviles
+        if (window.innerWidth <= 768) {
+            document.querySelectorAll('.filter-control').forEach(control => {
+                control.addEventListener('focus', function() {
+                    this.style.fontSize = '16px'; // Previene el zoom en iOS
+                });
+            });
+        }
+    </script>
+</body>
+</html>
