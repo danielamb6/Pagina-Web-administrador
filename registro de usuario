@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Usuarios | Admin Incidencias</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { 
+            box-sizing: border-box; 
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(to right, #122db3, #2980b9);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-section img {
+            height: 50px;
+            width: auto;
+        }
+
+        .logo-section h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            color: #122db3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Contenedor principal */
+        .main-container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 40px;
+        }
+
+        /* Título de la página */
+        .page-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .page-title h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        /* Tarjeta de formulario */
+        .form-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .form-card h3 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .form-group .required {
+            color: #e74c3c;
+        }
+
+        .form-control {
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .select-control {
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Tabla de usuarios */
+        .table-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-header h3 {
+            color: #2c3e50;
+            font-size: 1.4rem;
+        }
+
+        .search-box {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: 250px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead {
+            background-color: #f8f9fa;
+        }
+
+        table th {
+            padding: 16px;
+            text-align: left;
+            color: #2c3e50;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        table td {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .role-admin {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .role-tecnico {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .role-cliente {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-active {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icon {
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-edit {
+            color: #3498db;
+        }
+
+        .btn-edit:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .btn-delete {
+            color: #e74c3c;
+        }
+
+        .btn-delete:hover {
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                padding: 0 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .logo-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .page-title {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        /* Mensajes */
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .password-requirements {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-section">
+                <img src="Sistema de incidencias.png" alt="Logo">
+                <h1>Sistema de Incidencias</h1>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="página_admin.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="registro_usuario.html" class="nav-link active">
+                    <i class="fas fa-users"></i> Usuarios
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-exclamation-circle"></i> Incidencias
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-cog"></i> Configuración
+                </a>
+            </nav>
+            
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <div>
+                    <p style="font-weight: 600; font-size: 0.9rem;">Administrador</p>
+                    <a href="inicio de sesion.html" style="font-size: 0.8rem; color: rgba(255,255,255,0.8);">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="main-container">
+        <!-- Título y botón -->
+        <div class="page-title">
+            <h2>
+                <i class="fas fa-user-plus"></i> Registro de Usuarios
+            </h2>
+            <button class="btn btn-primary" id="btnNuevoUsuario">
+                <i class="fas fa-plus"></i> Nuevo Usuario
+            </button>
+        </div>
+
+        <!-- Mensajes de éxito/error -->
+        <div class="alert alert-success" id="successMessage">
+            <i class="fas fa-check-circle"></i> Usuario registrado exitosamente
+        </div>
+
+        <!-- Formulario de registro -->
+        <div class="form-card" id="formRegistro">
+            <h3><i class="fas fa-user-edit"></i> Información del Usuario</h3>
+            
+            <form id="usuarioForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre Completo <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="nombre" placeholder="Ej: Juan Pérez" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Correo Electrónico <span class="required">*</span></label>
+                        <input type="email" class="form-control" id="email" placeholder="usuario@empresa.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" class="form-control" id="telefono" placeholder="Ej: 555-123-4567">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Empresa</label>
+                        <select class="select-control" id="empresa">
+                            <option value="">Seleccionar empresa</option>
+                            <option value="zoxo">Zoxo</option>
+                            <option value="codiversa">Codiversa</option>
+                            <option value="copesa">Copesa</option>
+                            <option value="sitraq">Sitraq</option>
+                            <option value="corevsa">Corevsa</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Rol <span class="required">*</span></label>
+                        <select class="select-control" id="rol" required>
+                            <option value="">Seleccionar rol</option>
+                            <option value="administrador">Administrador</option>
+                            <option value="tecnico">Técnico</option>
+                            <option value="cliente">Cliente</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Nombre de Usuario <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="username" placeholder="Ej: jperez" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Contraseña <span class="required">*</span></label>
+                        <input type="password" class="form-control" id="password" placeholder="Mínimo 8 caracteres" required>
+                        <div class="password-requirements">
+                            <i class="fas fa-info-circle"></i> Mínimo 8 caracteres, una mayúscula y un número
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Confirmar Contraseña <span class="required">*</span></label>
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Repite la contraseña" required>
+                    </div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="activo" checked>
+                    <label for="activo">Usuario activo</label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="btnCancelar">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Guardar Usuario
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de usuarios registrados -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3><i class="fas fa-list"></i> Usuarios Registrados</h3>
+                <input type="text" class="search-box" placeholder="Buscar usuario..." id="buscarUsuario">
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Empresa</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaUsuarios">
+                    <!-- Los usuarios se cargarán aquí con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div class="modal" id="modalEliminar">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar al usuario <strong id="nombreUsuarioEliminar"></strong>?</p>
+                <p class="password-requirements">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelarEliminar">Cancelar</button>
+                <button class="btn btn-danger" id="confirmarEliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo
+        const usuariosEjemplo = [
+            {
+                id: 1,
+                nombre: "Juan Pérez",
+                username: "jperez",
+                email: "juan@empresa.com",
+                rol: "tecnico",
+                empresa: "Zoxo",
+                telefono: "555-123-4567",
+                activo: true
+            },
+            {
+                id: 2,
+                nombre: "María Gómez",
+                username: "mgomez",
+                email: "maria@empresa.com",
+                rol: "administrador",
+                empresa: "Codiversa",
+                telefono: "555-987-6543",
+                activo: true
+            },
+            {
+                id: 3,
+                nombre: "Carlos Rodríguez",
+                username: "crodriguez",
+                email: "carlos@empresa.com",
+                rol: "cliente",
+                empresa: "Copesa",
+                telefono: "555-456-7890",
+                activo: false
+            }
+        ];
+
+        // Variables
+        let usuarios = JSON.parse(localStorage.getItem('usuarios')) || usuariosEjemplo;
+        let usuarioAEliminar = null;
+
+        // Cargar tabla de usuarios
+        function cargarTablaUsuarios(filtro = '') {
+            const tabla = document.getElementById('tablaUsuarios');
+            tabla.innerHTML = '';
+            
+            const usuariosFiltrados = usuarios.filter(usuario => 
+                usuario.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
+                usuario.username.toLowerCase().includes(filtro.toLowerCase()) ||
+                usuario.email.toLowerCase().includes(filtro.toLowerCase())
+            );
+            
+            usuariosFiltrados.forEach(usuario => {
+                const fila = document.createElement('tr');
+                
+                // Determinar clase del badge según el rol
+                let claseRol = '';
+                switch(usuario.rol) {
+                    case 'administrador': claseRol = 'role-admin'; break;
+                    case 'tecnico': claseRol = 'role-tecnico'; break;
+                    case 'cliente': claseRol = 'role-cliente'; break;
+                }
+                
+                fila.innerHTML = `
+                    <td>${usuario.nombre}</td>
+                    <td><strong>${usuario.username}</strong></td>
+                    <td>${usuario.email}</td>
+                    <td><span class="role-badge ${claseRol}">${usuario.rol}</span></td>
+                    <td>${usuario.empresa || '-'}</td>
+                    <td class="${usuario.activo ? 'status-active' : 'status-inactive'}">
+                        <i class="fas fa-circle" style="font-size: 0.7rem;"></i> 
+                        ${usuario.activo ? ' Activo' : ' Inactivo'}
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-edit" onclick="editarUsuario(${usuario.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon btn-delete" onclick="mostrarModalEliminar(${usuario.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tabla.appendChild(fila);
+            });
+        }
+
+        // Guardar usuario
+        document.getElementById('usuarioForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validar contraseñas
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
+            
+            if (password.length < 8) {
+                alert('La contraseña debe tener al menos 8 caracteres');
+                return;
+            }
+            
+            // Crear nuevo usuario
+            const nuevoUsuario = {
+                id: usuarios.length > 0 ? Math.max(...usuarios.map(u => u.id)) + 1 : 1,
+                nombre: document.getElementById('nombre').value,
+                email: document.getElementById('email').value,
+                telefono: document.getElementById('telefono').value,
+                empresa: document.getElementById('empresa').value,
+                rol: document.getElementById('rol').value,
+                username: document.getElementById('username').value,
+                activo: document.getElementById('activo').checked,
+                fechaRegistro: new Date().toLocaleDateString()
+            };
+            
+            // Agregar a la lista
+            usuarios.push(nuevoUsuario);
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+            
+            // Mostrar mensaje de éxito
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Limpiar formulario
+            document.getElementById('usuarioForm').reset();
+            
+            // Recargar tabla
+            cargarTablaUsuarios();
+            
+            // Ocultar mensaje después de 3 segundos
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+            }, 3000);
+        });
+
+        // Editar usuario
+        function editarUsuario(id) {
+            const usuario = usuarios.find(u => u.id === id);
+            if (usuario) {
+                // Llenar formulario con datos del usuario
+                document.getElementById('nombre').value = usuario.nombre;
+                document.getElementById('email').value = usuario.email;
+                document.getElementById('telefono').value = usuario.telefono;
+                document.getElementById('empresa').value = usuario.empresa;
+                document.getElementById('rol').value = usuario.rol;
+                document.getElementById('username').value = usuario.username;
+                document.getElementById('activo').checked = usuario.activo;
+                
+                // Cambiar texto del botón
+                document.querySelector('.btn-success').innerHTML = '<i class="fas fa-save"></i> Actualizar Usuario';
+                
+                // Scroll al formulario
+                document.getElementById('formRegistro').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Mostrar modal de eliminación
+        function mostrarModalEliminar(id) {
+            const usuario = usuarios.find(u => u.id === id);
+            if (usuario) {
+                usuarioAEliminar = id;
+                document.getElementById('nombreUsuarioEliminar').textContent = usuario.nombre;
+                document.getElementById('modalEliminar').style.display = 'flex';
+            }
+        }
+
+        // Eliminar usuario
+        document.getElementById('confirmarEliminar').addEventListener('click', function() {
+            if (usuarioAEliminar) {
+                usuarios = usuarios.filter(u => u.id !== usuarioAEliminar);
+                localStorage.setItem('usuarios', JSON.stringify(usuarios));
+                cargarTablaUsuarios();
+                cerrarModal();
+            }
+        });
+
+        // Cancelar eliminación
+        document.getElementById('cancelarEliminar').addEventListener('click', cerrarModal);
+        document.getElementById('closeModal').addEventListener('click', cerrarModal);
+
+        // Cerrar modal
+        function cerrarModal() {
+            document.getElementById('modalEliminar').style.display = 'none';
+            usuarioAEliminar = null;
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('modalEliminar');
+            if (e.target === modal) {
+                cerrarModal();
+            }
+        });
+
+        // Buscar usuarios
+        document.getElementById('buscarUsuario').addEventListener('input', function(e) {
+            cargarTablaUsuarios(e.target.value);
+        });
+
+        // Nuevo usuario
+        document.getElementById('btnNuevoUsuario').addEventListener('click', function() {
+            document.getElementById('usuarioForm').reset();
+            document.querySelector('.btn-success').innerHTML = '<i class="fas fa-save"></i> Guardar Usuario';
+            document.getElementById('formRegistro').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Cancelar registro
+        document.getElementById('btnCancelar').addEventListener('click', function() {
+            document.getElementById('usuarioForm').reset();
+        });
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarTablaUsuarios();
+        });
+    </script>
+</body>
+</html>
