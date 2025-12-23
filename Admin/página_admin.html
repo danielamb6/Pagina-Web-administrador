@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Reportes de Incidencias</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* PALETA DE COLORES ARMÓNICA */
+            --primary-blue: #1a2980;        /* Azul principal más oscuro */
+            --secondary-blue: #26d0ce;      /* Turquesa para acentos */
+            --wine: #7b112f;                /* Vino para botones */
+            --dark-wine: #5a0c22;           /* Vino oscuro para hover */
+            --accent-color: #AB096A;        /* ROSA/VINO para destacar (reemplaza el dorado) */
+            --light-accent: #f8d4e8;        /* Rosa claro para fondos */
+            --gray-dark: #2c3e50;           /* Gris oscuro para sidebar */
+            --gray-medium: #34495e;         /* Gris medio */
+            --gray-light: #ecf0f1;          /* Gris claro para fondo */
+            --success: #27ae60;             /* Verde éxito */
+            --warning: #f39c12;             /* Naranja advertencia (MANTENIDO para estado del ticket) */
+            --danger: #e74c3c;              /* Rojo peligro */
+            --white: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-light: #999999;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', Helvetica, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--gray-light) 0%, #ffffff 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        /* BARRA SUPERIOR CON LOGO MEJORADO */
+        .top-bar {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: var(--white);
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(26, 41, 128, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--accent-color);
+            min-height: 70px;
+        }
+        
+        /* Logo container mejorado */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* Logo image styling */
+        .logo-img {
+            height: 40px; /* Tamaño ajustado del logo */
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Logo text styling */
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .logo-text h1 {
+            color: var(--white);
+            font-size: 1.4rem; /* Tamaño reducido */
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            line-height: 1.2;
+            margin: 0;
+        }
+        
+        .logo-text span {
+            color: var(--accent-color);
+            font-weight: 800;
+        }
+        
+        .logo-text .subtitle {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-top: 2px;
+            font-weight: 500;
+        }
+        
+        /* Información del usuario en barra superior */
+        .top-user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .top-user-avatar {
+            width: 40px; /* Tamaño reducido */
+            height: 40px; /* Tamaño reducido */
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            font-size: 1rem;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .user-details {
+            text-align: right;
+        }
+        
+        .user-details .user-name {
+            font-weight: 700;
+            font-size: 0.95rem; /* Tamaño reducido */
+            color: var(--white);
+        }
+        
+        .user-details .user-role {
+            font-size: 0.8rem; /* Tamaño reducido */
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .container {
+            display: flex;
+            min-height: calc(100vh - 70px); /* Ajustado al nuevo tamaño de la barra */
+        }
+        
+        /* Sidebar con gradiente y acento rosa */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(to bottom, var(--gray-dark), var(--gray-medium));
+            color: var(--white);
+            padding: 20px 0;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--accent-color);
+        }
+        
+        .logo-sidebar {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .logo-sidebar::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+        
+        .logo-sidebar h2 {
+            font-size: 1.3rem; /* Tamaño reducido */
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 5px;
+        }
+        
+        .logo-sidebar span {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+        
+        .logo-sidebar p {
+            font-size: 0.75rem; /* Tamaño reducido */
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+        }
+        
+        .menu {
+            list-style: none;
+            padding: 0 20px;
+        }
+        
+        .menu-item {
+            margin-bottom: 8px;
+        }
+        
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .menu-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(to right, rgba(171, 9, 106, 0.2), rgba(171, 9, 106, 0.1));
+            transition: width 0.3s ease;
+        }
+        
+        .menu-link:hover, .menu-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            transform: translateX(5px);
+        }
+        
+        .menu-link:hover::before, .menu-link.active::before {
+            width: 100%;
+        }
+        
+        .menu-link i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            min-width: 24px;
+            text-align: center;
+        }
+        
+        .menu-link.active i {
+            color: var(--accent-color);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            background: var(--white);
+        }
+        
+        /* Título de la página */
+        .page-title {
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent-color);
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .page-title::before {
+            content: '';
+            width: 8px;
+            height: 30px;
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+        
+        /* Filter Section */
+        .filters {
+            background: linear-gradient(135deg, rgba(26, 41, 128, 0.05) 0%, rgba(38, 208, 206, 0.05) 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(171, 9, 106, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .filters::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary-blue), var(--accent-color));
+        }
+        
+        .filters h2 {
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filters h2 i {
+            color: var(--accent-color);
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-group label i {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+        }
+        
+        .filter-control {
+            padding: 12px 15px;
+            border: 1px solid rgba(171, 9, 106, 0.3);
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: var(--white);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .filter-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(171, 9, 106, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .filter-control::placeholder {
+            color: var(--text-light);
+        }
+        
+        /* Estilo específico para selects */
+        select.filter-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23AB096A'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+        
+        /* Estilo para options */
+        .filter-control option {
+            background-color: var(--white);
+            color: var(--text-primary);
+            padding: 10px;
+        }
+        
+        .date-range {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(171, 9, 106, 0.2);
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            color: var(--white);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #8A0755 100%);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #8A0755 0%, #690542 100%);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--gray-medium) 0%, var(--gray-dark) 100%);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--gray-dark) 0%, #2c3e50 100%);
+        }
+        
+        /* Data Summary */
+        .data-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
+            border-radius: 12px;
+            padding: 25px 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid rgba(171, 9, 106, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-blue), var(--accent-color));
+        }
+        
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .summary-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .summary-card h3 {
+            font-size: 2.2rem;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        
+        .summary-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Table Preview */
+        .table-preview {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(171, 9, 106, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .table-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-blue), var(--accent-color));
+        }
+        
+        .table-preview h2 {
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .table-preview h2 i {
+            color: var(--accent-color);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            color: var(--text-primary);
+        }
+        
+        table thead {
+            background: linear-gradient(135deg, rgba(26, 41, 128, 0.1) 0%, rgba(171, 9, 106, 0.1) 100%);
+        }
+        
+        table th {
+            padding: 15px;
+            text-align: left;
+            color: var(--primary-blue);
+            font-weight: 600;
+            border-bottom: 2px solid var(--accent-color);
+            position: relative;
+        }
+        
+        table th:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            height: 60%;
+            width: 1px;
+            background: rgba(171, 9, 106, 0.3);
+        }
+        
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(171, 9, 106, 0.1);
+            color: var(--text-primary);
+            transition: background-color 0.2s ease;
+        }
+        
+        table tbody tr:hover {
+            background-color: rgba(171, 9, 106, 0.05);
+        }
+        
+        /* ESTADOS DE TICKET - SE MANTIENEN ORIGINALES */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--white);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-resuelto {
+            background: linear-gradient(135deg, var(--success) 0%, #2ecc71 100%);
+        }
+        
+        .status-pendiente {
+            background: linear-gradient(135deg, var(--warning) 0%, #f1c40f 100%);
+        }
+        
+        .empresa-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, rgba(171, 9, 106, 0.1) 0%, rgba(26, 41, 128, 0.1) 100%);
+            color: var(--primary-blue);
+            border: 1px solid rgba(171, 9, 106, 0.3);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding: 10px 0;
+            }
+            
+            .sidebar::before {
+                width: 100%;
+                height: 5px;
+                top: 0;
+                left: 0;
+            }
+            
+            .menu {
+                display: flex;
+                overflow-x: auto;
+                padding: 10px;
+                gap: 10px;
+            }
+            
+            .menu-item {
+                margin-bottom: 0;
+            }
+            
+            .menu-link {
+                white-space: nowrap;
+            }
+            
+            .menu-link span {
+                font-size: 0.9rem;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+                text-align: center;
+                min-height: auto;
+            }
+            
+            .logo-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .logo-img {
+                height: 35px;
+            }
+            
+            .top-user-info {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .user-details {
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+            
+            .logo-text .subtitle {
+                font-size: 0.7rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .top-bar {
+                padding: 10px 15px;
+            }
+            
+            .logo-img {
+                height: 30px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1rem;
+            }
+            
+            .data-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Scrollbar personalizado con acento rosa */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(171, 9, 106, 0.1);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--primary-blue), var(--accent-color));
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, var(--accent-color), var(--primary-blue));
+        }
+        
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .summary-card, .filters, .table-preview {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .summary-card:nth-child(2) { animation-delay: 0.1s; }
+        .summary-card:nth-child(3) { animation-delay: 0.2s; }
+        .summary-card:nth-child(4) { animation-delay: 0.3s; }
+        
+        /* Efectos de brillo en hover para tarjetas */
+        .summary-card:hover::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(171, 9, 106, 0.2), transparent);
+            animation: shine 1.5s ease-in-out;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* Estilos para elementos de formulario específicos */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.5) sepia(1) saturate(5) hue-rotate(300deg);
+            cursor: pointer;
+        }
+        
+        /* Tooltips con acento rosa */
+        [data-tooltip] {
+            position: relative;
+        }
+        
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-color);
+            color: var(--white);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            visibility: visible;
+            bottom: 120%;
+        }
+        
+        /* Badge de notificaciones con rosa */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(135deg, var(--accent-color), #8A0755);
+            color: var(--white);
+            font-size: 0.7rem;
+            font-weight: bold;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--white);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Estilo para el estado de carga con rosa */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(171, 9, 106, 0.3), transparent);
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Placeholder para logo si no se carga */
+        .logo-placeholder {
+            height: 40px;
+            width: 40px;
+            background: linear-gradient(135deg, var(--white), var(--accent-color));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- BARRA SUPERIOR CON LOGO ORGANIZADO -->
+    <div class="top-bar">
+        <div class="logo-container">
+            <!-- Logo con placeholder en caso de que la imagen no se cargue -->
+            <div class="logo-placeholder" id="logo-placeholder">
+                <i class="fas fa-tools"></i>
+            </div>
+            <img src="logo sin fondo.png" alt="Logo del Sistema" class="logo-img"  onerror="document.getElementById('logo-placeholder').style.display='flex'; this.style.display='none'">           
+            <div class="logo-text">
+                <h1>Sistema de <span>Incidencias</span></h1>
+                <div class="subtitle">Panel de Administración</div>
+            </div>
+        </div>
+        
+        <div class="top-user-info">
+            <div class="user-details">
+                <div class="user-name">Administrador</div>
+                <div class="user-role">Reportes de Incidencias</div>
+            </div>
+            <div class="top-user-avatar" data-tooltip="Administrador">AD</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar con acento rosa -->
+        <aside class="sidebar">
+            <div class="logo-sidebar">
+                <h2>Admin<span>Incidencias</span></h2>
+                <p>Sistema de Gestión</p>
+            </div>
+            <ul class="menu">
+                <li class="menu-item">
+                    <a href="#" class="menu-link active">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                        <span class="notification-badge">3</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>Incidencias</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-users"></i>
+                        <span>Técnicos</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-building"></i>
+                        <span>Empresas</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-file-export"></i>
+                        <span>Reportes</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Título de la página con acento rosa -->
+            <h1 class="page-title">
+                <i class="fas fa-chart-bar"></i>
+                Reportes de Incidencias
+            </h1>
+
+            <!-- Filtros con acento rosa -->
+            <section class="filters">
+                <h2><i class="fas fa-filter"></i> Filtrar Reporte</h2>
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="empresa"><i class="fas fa-building"></i> Empresa</label>
+                        <select id="empresa" class="filter-control">
+                            <option value="">Todas las empresas</option>
+                            <option value="zoxo">Zoxo</option>
+                            <option value="codiversa">Codiversa</option>
+                            <option value="copesa">Copesa</option>
+                            <option value="sitraq">Sitraq</option>
+                            <option value="corevsa">Corevsa</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="tecnico"><i class="fas fa-user-cog"></i> Técnico</label>
+                        <select id="tecnico" class="filter-control">
+                            <option value="">Todos los técnicos</option>
+                            <option value="juan_perez">Juan Pérez</option>
+                            <option value="maria_gomez">María Gómez</option>
+                            <option value="carlos_rodriguez">Carlos Rodríguez</option>
+                            <option value="ana_lopez">Ana López</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="tipo-falla"><i class="fas fa-tools"></i> Tipo de Falla</label>
+                        <select id="tipo-falla" class="filter-control">
+                            <option value="">Todos los tipos</option>
+                            <option value="equipos">Equipos</option>
+                            <option value="elementos">Elementos</option>
+                            <option value="accesorios">Accesorios</option>
+                            <option value="conexion">Conexión/Internet</option>
+                            <option value="configuracion">Configuración</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="fecha-inicio"><i class="fas fa-calendar-alt"></i> Rango de Fechas</label>
+                        <div class="date-range">
+                            <input type="date" id="fecha-inicio" class="filter-control" style="flex: 1;" data-tooltip="Fecha inicial">
+                            <input type="date" id="fecha-fin" class="filter-control" style="flex: 1;" data-tooltip="Fecha final">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn btn-secondary" id="limpiar-filtros" data-tooltip="Restablecer filtros">
+                        <i class="fas fa-eraser"></i> Limpiar Filtros
+                    </button>
+                    <button class="btn btn-primary" id="generar-reporte" data-tooltip="Generar reporte con filtros actuales">
+                        <i class="fas fa-file-export"></i> Generar Reporte
+                    </button>
+                    <button class="btn btn-primary" id="descargar-reporte" data-tooltip="Descargar reporte en Excel">
+                        <i class="fas fa-download"></i> Descargar Reporte
+                    </button>
+                </div>
+            </section>
+
+            <!-- Resumen de Datos con acento rosa -->
+            <section class="data-summary">
+                <div class="summary-card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>48</h3>
+                    <p>Incidencias Totales</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-user-cog"></i>
+                    <h3>12</h3>
+                    <p>Técnicos Activos</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-building"></i>
+                    <h3>5</h3>
+                    <p>Empresas</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>3.2h</h3>
+                    <p>Tiempo Promedio</p>
+                </div>
+            </section>
+
+            <!-- Vista Previa de Datos con acento rosa -->
+            <section class="table-preview">
+                <h2><i class="fas fa-table"></i> Vista Previa del Reporte</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Técnico</th>
+                            <th>Fecha</th>
+                            <th>Empresa</th>
+                            <th>Tiempo</th>
+                            <th>Tipo de Falla</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Juan Pérez</td>
+                            <td>15/10/2023</td>
+                            <td><span class="empresa-badge">Zoxo</span></td>
+                            <td>2.5h</td>
+                            <td>EQUIPOS - MDVR</td>
+                            <td><span class="status-badge status-resuelto">Resuelto</span></td>
+                        </tr>
+                        <tr>
+                            <td>María Gómez</td>
+                            <td>14/10/2023</td>
+                            <td><span class="empresa-badge">Codiversa</span></td>
+                            <td>4.0h</td>
+                            <td>ELEMENTOS - Cámara Operador</td>
+                            <td><span class="status-badge status-resuelto">Resuelto</span></td>
+                        </tr>
+                        <tr>
+                            <td>Carlos Rodríguez</td>
+                            <td>13/10/2023</td>
+                            <td><span class="empresa-badge">Copesa</span></td>
+                            <td>1.5h</td>
+                            <td>ACCESORIOS - Antena GPS</td>
+                            <td><span class="status-badge status-pendiente">Pendiente</span></td>
+                        </tr>
+                        <tr>
+                            <td>Ana López</td>
+                            <td>12/10/2023</td>
+                            <td><span class="empresa-badge">Sitraq</span></td>
+                            <td>3.0h</td>
+                            <td>FALLA REPORTADA - No accesa</td>
+                            <td><span class="status-badge status-resuelto">Resuelto</span></td>
+                        </tr>
+                        <tr>
+                            <td>Juan Pérez</td>
+                            <td>11/10/2023</td>
+                            <td><span class="empresa-badge">Corevsa</span></td>
+                            <td>2.0h</td>
+                            <td>SOLUCIÓN - Se restablece conexión</td>
+                            <td><span class="status-badge status-resuelto">Resuelto</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Inicializar fechas por defecto (últimos 30 días)
+        const hoy = new Date();
+        const hace30Dias = new Date();
+        hace30Dias.setDate(hoy.getDate() - 30);
+        
+        document.getElementById('fecha-inicio').value = hace30Dias.toISOString().split('T')[0];
+        document.getElementById('fecha-fin').value = hoy.toISOString().split('T')[0];
+        
+        // Manejar el logo placeholder
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoImg = document.querySelector('.logo-img');
+            const logoPlaceholder = document.getElementById('logo-placeholder');
+            
+            // Ocultar placeholder si la imagen se carga correctamente
+            if (logoImg.complete && logoImg.naturalHeight !== 0) {
+                logoPlaceholder.style.display = 'none';
+            }
+        });
+        
+        // Efecto de hover para elementos del menú
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.addEventListener('mouseenter', function(e) {
+                this.style.transform = 'translateX(5px)';
+            });
+            
+            link.addEventListener('mouseleave', function(e) {
+                if (!this.classList.contains('active')) {
+                    this.style.transform = 'translateX(0)';
+                }
+            });
+        });
+        
+        // Eventos de los botones
+        document.getElementById('limpiar-filtros').addEventListener('click', function() {
+            // Agregar efecto de click
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+            
+            // Limpiar filtros
+            document.getElementById('empresa').value = '';
+            document.getElementById('tecnico').value = '';
+            document.getElementById('tipo-falla').value = '';
+            
+            // Restaurar fechas por defecto
+            document.getElementById('fecha-inicio').value = hace30Dias.toISOString().split('T')[0];
+            document.getElementById('fecha-fin').value = hoy.toISOString().split('T')[0];
+            
+            // Mostrar notificación
+            showNotification('Filtros limpiados correctamente', 'success');
+        });
+        
+        document.getElementById('generar-reporte').addEventListener('click', function() {
+            this.classList.add('loading');
+            
+            // Simular proceso de generación
+            setTimeout(() => {
+                this.classList.remove('loading');
+                
+                const empresa = document.getElementById('empresa').value;
+                const tecnico = document.getElementById('tecnico').value;
+                const tipoFalla = document.getElementById('tipo-falla').value;
+                const fechaInicio = document.getElementById('fecha-inicio').value;
+                const fechaFin = document.getElementById('fecha-fin').value;
+                
+                let mensaje = '📊 Reporte generado con los siguientes filtros:\n';
+                if (empresa) mensaje += `• Empresa: ${empresa}\n`;
+                if (tecnico) mensaje += `• Técnico: ${tecnico}\n`;
+                if (tipoFalla) mensaje += `• Tipo de falla: ${tipoFalla}\n`;
+                mensaje += `• Fecha inicio: ${fechaInicio || 'No especificada'}\n`;
+                mensaje += `• Fecha fin: ${fechaFin || 'No especificada'}`;
+                
+                showNotification('Reporte generado exitosamente', 'success');
+                
+                // Simular actualización de datos
+                updateSummaryCards();
+            }, 1500);
+        });
+        
+        document.getElementById('descargar-reporte').addEventListener('click', function() {
+            this.classList.add('loading');
+            
+            setTimeout(() => {
+                this.classList.remove('loading');
+                showNotification('Reporte descargado en formato Excel', 'success');
+                
+                // Simulación de descarga
+                alert('📥 Reporte descargado exitosamente!\n\nEl archivo incluye:\n• Técnico que atendió\n• Fecha de la incidencia\n• Empresa\n• Tiempo de resolución\n• Tipo de falla\n• Detalles completos');
+            }, 1000);
+        });
+        
+        // Función para mostrar notificaciones con acento rosa
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                max-width: 350px;
+            `;
+            
+            if (type === 'success') {
+                notification.style.background = 'linear-gradient(135deg, var(--accent-color), #8A0755)';
+                notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            } else {
+                notification.style.background = 'linear-gradient(135deg, #3498db, var(--accent-color))';
+                notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+            }
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        // Animación CSS para notificaciones
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Función para simular actualización de datos
+        function updateSummaryCards() {
+            const cards = document.querySelectorAll('.summary-card h3');
+            cards.forEach(card => {
+                const originalValue = parseInt(card.textContent);
+                const randomChange = Math.floor(Math.random() * 5) - 2;
+                const newValue = Math.max(0, originalValue + randomChange);
+                
+                // Efecto de conteo
+                animateCount(card, originalValue, newValue);
+            });
+        }
+        
+        // Animación de conteo para números
+        function animateCount(element, start, end) {
+            const duration = 500;
+            const steps = 20;
+            const increment = (end - start) / steps;
+            let current = start;
+            let step = 0;
+            
+            const timer = setInterval(() => {
+                step++;
+                current += increment;
+                element.textContent = end.toFixed(1);
+                
+                if (step >= steps) {
+                    element.textContent = end;
+                    clearInterval(timer);
+                }
+            }, duration / steps);
+        }
+        
+        // Mejorar la experiencia de usuario en dispositivos móviles
+        if (window.innerWidth <= 768) {
+            document.querySelectorAll('.filter-control').forEach(control => {
+                control.addEventListener('focus', function() {
+                    this.style.fontSize = '16px';
+                });
+            });
+        }
+        
+        // Efecto hover en filas de tabla
+        document.querySelectorAll('table tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.01)';
+                this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+            });
+            
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = 'none';
+            });
+        });
+        
+        // Actualizar fecha automáticamente cada día
+        function updateDefaultDates() {
+            const hoy = new Date();
+            const hace30Dias = new Date();
+            hace30Dias.setDate(hoy.getDate() - 30);
+            
+            const fechaInicio = document.getElementById('fecha-inicio');
+            const fechaFin = document.getElementById('fecha-fin');
+            
+            // Solo actualizar si el usuario no ha modificado las fechas
+            if (!fechaInicio.dataset.modified) {
+                fechaInicio.value = hace30Dias.toISOString().split('T')[0];
+            }
+            
+            if (!fechaFin.dataset.modified) {
+                fechaFin.value = hoy.toISOString().split('T')[0];
+            }
+        }
+        
+        // Marcar fechas como modificadas por el usuario
+        document.getElementById('fecha-inicio').addEventListener('change', function() {
+            this.dataset.modified = 'true';
+        });
+        
+        document.getElementById('fecha-fin').addEventListener('change', function() {
+            this.dataset.modified = 'true';
+        });
+        
+        // Actualizar fechas cada día a medianoche
+        setInterval(() => {
+            const ahora = new Date();
+            if (ahora.getHours() === 0 && ahora.getMinutes() === 0) {
+                updateDefaultDates();
+            }
+        }, 60000);
+    </script>
+</body>
+</html>

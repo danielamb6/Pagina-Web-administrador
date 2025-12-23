@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio de Sesión | Admin Incidencias</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* === TUS COLORES ORIGINALES EXACTAMENTE === */
+        :root {
+            /* PALETA DE COLORES ARMÓNICA */
+            --primary-blue: #1a2980;        /* Azul principal más oscuro */
+            --secondary-blue: #26d0ce;      /* Turquesa para acentos */
+            --accent-color: #AB096A;        /* ROSA/VINO para destacar */
+            --light-accent: #f8d4e8;        /* Rosa claro para fondos */
+            --gray-dark: #2c3e50;           /* Gris oscuro para sidebar */
+            --gray-medium: #34495e;         /* Gris medio */
+            --gray-light: #ecf0f1;          /* Gris claro para fondo */
+            --success: #27ae60;             /* Verde éxito */
+            --warning: #f39c12;             /* Naranja advertencia */
+            --danger: #e74c3c;              /* Rojo peligro */
+            --white: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-light: #999999;
+        }
+        
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Arial', Helvetica, sans-serif; 
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efecto de fondo decorativo ORIGINAL */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(171, 9, 106, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(38, 208, 206, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(26, 41, 128, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* === TARJETA DE LOGIN ORIGINAL === */
+        .login-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(171, 9, 106, 0.2);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-blue), var(--accent-color));
+        }
+
+        .login-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 8s infinite;
+        }
+
+        /* === LOGO ORIGINAL === */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 10px;
+        }
+
+        .logo-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-container img:hover {
+            transform: scale(1.05);
+        }
+
+        /* === HEADER ORIGINAL === */
+        .login-header {
+            margin-bottom: 25px;
+        }
+
+        .login-header h2 {
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .login-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* === MENSAJE DE ERROR ORIGINAL === */
+        .error {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(231, 76, 60, 0.05) 100%);
+            color: var(--danger);
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+            border-left: 4px solid var(--danger);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            text-align: left;
+        }
+
+        .error i {
+            margin-right: 8px;
+        }
+
+        /* === FORMULARIO ORIGINAL === */
+        .form-group {
+            margin-bottom: 22px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .form-group .input-with-icon {
+            position: relative;
+        }
+
+        .form-group .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-color);
+            font-size: 1rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border-radius: 8px;
+            border: 1px solid rgba(171, 9, 106, 0.3);
+            font-size: 1rem;
+            background-color: var(--white);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(171, 9, 106, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-light);
+        }
+
+        /* === BOTÓN DE LOGIN ORIGINAL === */
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #8A0755 100%);
+            border: none;
+            border-radius: 8px;
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #8A0755 0%, #690542 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        /* === OPCIONES ADICIONALES ORIGINAL === */
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(171, 9, 106, 0.1);
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent-color);
+        }
+
+        .remember-me label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .forgot-password:hover {
+            color: #8A0755;
+            text-decoration: underline;
+        }
+
+        /* === FOOTER ORIGINAL === */
+        .footer-text {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            padding-top: 20px;
+            border-top: 1px solid rgba(171, 9, 106, 0.1);
+        }
+
+        /* === RESPONSIVE ORIGINAL === */
+        @media (max-width: 480px) {
+            .login-card {
+                margin: 20px;
+                padding: 30px 25px;
+            }
+            
+            .logo-container img {
+                max-height: 100px;
+            }
+            
+            .login-header h2 {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* === ANIMACIONES ORIGINALES === */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(45deg) translateX(-100%); }
+            100% { transform: rotate(45deg) translateX(100%); }
+        }
+
+        /* === SCROLLBAR PERSONALIZADO ORIGINAL === */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(171, 9, 106, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--primary-blue), var(--accent-color));
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, var(--accent-color), var(--primary-blue));
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <!-- LOGO ORIGINAL -->
+        <div class="logo-container">
+            <img src="Sistema de incidencias.png" alt="Logo Sistema de Incidencias" 
+                 width="400" height="auto" style="max-width: 100%;">
+        </div>
+
+        <div class="login-header">
+            <h2>Admin Incidencias</h2>
+            <p>Inicia sesión para continuar</p>
+        </div>
+
+        <div class="error" id="error-msg">
+            <i class="fas fa-exclamation-circle"></i> Usuario o contraseña incorrectos
+        </div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label>Correo electrónico o Nombre de Usuario</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="identificador" placeholder="email@empresa.com o usuario" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="********" required>
+                </div>
+            </div>
+
+            <div class="login-options">
+                <div class="remember-me">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Recordarme</label>
+                </div>
+                <a href="#" class="forgot-password" id="forgotPassword">
+                    ¿Olvidaste tu contraseña?
+                </a>
+            </div>
+
+            <button type="submit" class="btn-login">
+                <i class="fas fa-sign-in-alt"></i> Ingresar
+            </button>
+        </form>
+
+        <div class="footer-text">
+            © 2025 Sistema de Gestión de Incidencias
+        </div>
+    </div>
+
+    <!-- Scripts JavaScript -->
+    <script src="js/common.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/usuarios.js"></script>
+    <script src="js/login-controller.js"></script>
+
+    <script>
+        // Clase para manejar la autenticación (COMPATIBLE CON TU CÓDIGO)
+        class AuthService {
+            constructor() {
+                this.usuarios = JSON.parse(localStorage.getItem('usuarios')) || this.getUsuariosIniciales();
+                this.usuarioActual = null;
+            }
+
+            getUsuariosIniciales() {
+                return [
+                    {
+                        id: 1,
+                        nombre: "Administrador",
+                        username: "admin",
+                        email: "admin@incidencias.com",
+                        password: "admin123",
+                        rol: "administrador",
+                        activo: true
+                    }
+                ];
+            }
+
+            autenticar(identificador, password) {
+                const usuario = this.usuarios.find(u => 
+                    (u.email === identificador || u.username === identificador) && 
+                    u.password === password
+                );
+
+                if (usuario) {
+                    if (!usuario.activo) {
+                        return { 
+                            success: false, 
+                            message: "Usuario desactivado. Contacta al administrador." 
+                        };
+                    }
+                    
+                    this.usuarioActual = usuario;
+                    return { 
+                        success: true, 
+                        usuario: usuario 
+                    };
+                }
+                
+                return { 
+                    success: false, 
+                    message: "Credenciales incorrectas" 
+                };
+            }
+
+            guardarSesion(recordar = false) {
+                if (this.usuarioActual) {
+                    const sesionData = {
+                        id: this.usuarioActual.id,
+                        nombre: this.usuarioActual.nombre,
+                        rol: this.usuarioActual.rol,
+                        timestamp: new Date().getTime()
+                    };
+                    
+                    if (recordar) {
+                        localStorage.setItem('sesion', JSON.stringify(sesionData));
+                    } else {
+                        sessionStorage.setItem('sesion', JSON.stringify(sesionData));
+                    }
+                    
+                    localStorage.setItem('usuarioActual', JSON.stringify(this.usuarioActual));
+                }
+            }
+
+            verificarSesionGuardada() {
+                const sesion = localStorage.getItem('sesion') || sessionStorage.getItem('sesion');
+                if (sesion) {
+                    const sesionData = JSON.parse(sesion);
+                    const ahora = new Date().getTime();
+                    const tiempoSesion = 30 * 24 * 60 * 60 * 1000;
+                    
+                    if (localStorage.getItem('sesion')) {
+                        if (ahora - sesionData.timestamp < tiempoSesion) {
+                            return true;
+                        } else {
+                            localStorage.removeItem('sesion');
+                            sessionStorage.removeItem('sesion');
+                        }
+                    } else if (sessionStorage.getItem('sesion')) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            obtenerUsuarioPorId(id) {
+                return this.usuarios.find(u => u.id === id);
+            }
+
+            redirigirSegunRol(rol) {
+                const rutas = {
+                    'administrador': 'página_admin.html',
+                    'tecnico': 'página_admin.html',
+                    'cliente': 'página_admin.html'
+                };
+                
+                return rutas[rol] || 'página_admin.html';
+            }
+        }
+
+        // Controlador del formulario de login (COMPATIBLE)
+        class LoginController {
+            constructor() {
+                this.authService = new AuthService();
+                this.init();
+            }
+
+            init() {
+                this.cargarEventos();
+                this.verificarSesionPrevia();
+                this.cargarRecordarme();
+            }
+
+            cargarEventos() {
+                document.getElementById("login-form").addEventListener("submit", (e) => this.iniciarSesion(e));
+                document.getElementById("forgotPassword").addEventListener("click", (e) => this.olvidoContrasena(e));
+            }
+
+            verificarSesionPrevia() {
+                if (this.authService.verificarSesionGuardada()) {
+                    const sesion = JSON.parse(localStorage.getItem('sesion') || sessionStorage.getItem('sesion'));
+                    const usuario = this.authService.obtenerUsuarioPorId(sesion.id);
+                    
+                    if (usuario && usuario.activo) {
+                        this.mostrarMensaje('Sesión detectada. Redirigiendo...', 'info');
+                        
+                        setTimeout(() => {
+                            window.location.href = this.authService.redirigirSegunRol(usuario.rol);
+                        }, 1000);
+                    }
+                }
+            }
+
+            cargarRecordarme() {
+                const recordar = localStorage.getItem('recordarUsuario') === 'true';
+                if (recordar) {
+                    document.getElementById('remember').checked = true;
+                    const ultimoUsuario = localStorage.getItem('ultimoUsuario');
+                    if (ultimoUsuario) {
+                        document.getElementById('identificador').value = ultimoUsuario;
+                    }
+                }
+            }
+
+            async iniciarSesion(e) {
+                e.preventDefault();
+
+                const identificador = document.getElementById("identificador").value.trim();
+                const password = document.getElementById("password").value;
+                const recordar = document.getElementById("remember").checked;
+                const errorMsg = document.getElementById("error-msg");
+
+                errorMsg.style.display = "none";
+                
+                if (!identificador || !password) {
+                    this.mostrarError('Por favor, completa todos los campos');
+                    return;
+                }
+
+                if (this.authService.usuarios.length === 0) {
+                    this.mostrarError('No hay usuarios registrados. Contacta al administrador.');
+                    return;
+                }
+
+                const submitBtn = document.querySelector('.btn-login');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+                submitBtn.disabled = true;
+
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                const resultado = this.authService.autenticar(identificador, password);
+                
+                if (resultado.success) {
+                    this.authService.guardarSesion(recordar);
+                    
+                    localStorage.setItem('recordarUsuario', recordar);
+                    if (recordar) {
+                        localStorage.setItem('ultimoUsuario', identificador);
+                    } else {
+                        localStorage.removeItem('ultimoUsuario');
+                    }
+                    
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> ¡Acceso concedido!';
+                    
+                    setTimeout(() => {
+                        window.location.href = this.authService.redirigirSegunRol(resultado.usuario.rol);
+                    }, 800);
+                    
+                } else {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    this.mostrarError(resultado.message);
+                    
+                    const loginCard = document.querySelector('.login-card');
+                    loginCard.style.animation = 'none';
+                    setTimeout(() => {
+                        loginCard.style.animation = 'fadeIn 0.5s ease-out';
+                    }, 10);
+                }
+            }
+
+            olvidoContrasena(e) {
+                e.preventDefault();
+                const identificador = document.getElementById("identificador").value.trim();
+                
+                if (!identificador) {
+                    this.mostrarError('Por favor, ingresa tu correo o nombre de usuario para recuperar la contraseña');
+                    return;
+                }
+
+                const usuario = this.authService.usuarios.find(u => 
+                    u.email === identificador || u.username === identificador
+                );
+
+                if (usuario) {
+                    this.mostrarMensaje(
+                        `Se ha enviado un enlace de recuperación a ${usuario.email}. ` +
+                        `(Esta es una simulación. En producción se enviaría un email real)`,
+                        'info'
+                    );
+                } else {
+                    this.mostrarError('No se encontró una cuenta con ese correo o nombre de usuario');
+                }
+            }
+
+            mostrarError(mensaje) {
+                const errorMsg = document.getElementById("error-msg");
+                errorMsg.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${mensaje}`;
+                errorMsg.style.display = "block";
+            }
+
+            mostrarMensaje(mensaje, tipo = 'info') {
+                const mensajeDiv = document.createElement('div');
+                mensajeDiv.className = `error ${tipo === 'info' ? 'info-message' : ''}`;
+                mensajeDiv.innerHTML = `<i class="fas fa-${tipo === 'info' ? 'info-circle' : 'exclamation-circle'}"></i> ${mensaje}`;
+                mensajeDiv.style.display = 'block';
+                
+                if (tipo === 'info') {
+                    mensajeDiv.style.background = 'linear-gradient(135deg, rgba(26, 41, 128, 0.1) 0%, rgba(38, 208, 206, 0.1) 100%)';
+                    mensajeDiv.style.color = 'var(--primary-blue)';
+                    mensajeDiv.style.borderLeft = '4px solid var(--primary-blue)';
+                }
+                
+                const form = document.getElementById('login-form');
+                form.parentNode.insertBefore(mensajeDiv, form);
+                
+                setTimeout(() => {
+                    mensajeDiv.remove();
+                }, 5000);
+            }
+        }
+
+        // Inicializar la aplicación
+        let loginController;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loginController = new LoginController();
+            
+            // Verificar si la imagen del logo existe (TU CÓDIGO ORIGINAL)
+            const logoImg = document.querySelector('.logo-container img');
+            
+            logoImg.onerror = function() {
+                console.log("No se encontró la imagen del logo. Verifica que el archivo esté en la misma carpeta.");
+                
+                const logoContainer = document.querySelector('.logo-container');
+                logoContainer.innerHTML = `
+                    <div style="
+                        width: 120px;
+                        height: 120px;
+                        margin: 0 auto 20px;
+                        background: linear-gradient(135deg, var(--primary-blue), var(--accent-color));
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 2.5rem;
+                    ">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h2 style="color: var(--primary-blue); margin: 0; font-size: 1.8rem;">Admin Incidencias</h2>
+                `;
+            };
+            
+            // Efecto de entrada para el formulario (TU CÓDIGO ORIGINAL)
+            const form = document.getElementById('login-form');
+            form.style.opacity = '0';
+            form.style.transform = 'translateY(10px)';
+            
+            setTimeout(() => {
+                form.style.transition = 'all 0.5s ease';
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }, 300);
+
+            // Efecto de focus mejorado (TU CÓDIGO ORIGINAL)
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.parentElement.style.transform = 'translateY(-2px)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.parentElement.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Estilo adicional para mensajes informativos (TU CÓDIGO ORIGINAL)
+            const style = document.createElement('style');
+            style.textContent = `
+                .info-message {
+                    background: linear-gradient(135deg, rgba(26, 41, 128, 0.1) 0%, rgba(38, 208, 206, 0.1) 100%);
+                    color: var(--primary-blue);
+                    border-left: 4px solid var(--primary-blue);
+                }
+            `;
+            document.head.appendChild(style);
+        });
+
+        // Para desarrollo: agregar información útil (TU CÓDIGO ORIGINAL)
+        console.log('=== SISTEMA DE LOGIN ===');
+        console.log('Los usuarios se cargan desde localStorage');
+        console.log('Para probar con usuario demo:');
+        console.log('Email: admin@incidencias.com');
+        console.log('Usuario: admin');
+        console.log('Contraseña: admin123');
+        console.log('=======================');
+    </script>
+</body>
+</html>
