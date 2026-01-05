@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* === TUS COLORES ORIGINALES EXACTAMENTE === */
         :root {
             /* PALETA DE COLORES ARMÓNICA */
             --primary-blue: #1a2980;        /* Azul principal más oscuro */
@@ -43,7 +42,7 @@
             overflow: hidden;
         }
 
-        /* Efecto de fondo decorativo ORIGINAL */
+        /* Efecto de fondo decorativo */
         body::before {
             content: '';
             position: absolute;
@@ -58,7 +57,6 @@
             z-index: -1;
         }
 
-        /* === TARJETA DE LOGIN ORIGINAL === */
         .login-card {
             background: var(--white);
             width: 100%;
@@ -95,7 +93,6 @@
             animation: shimmer 8s infinite;
         }
 
-        /* === LOGO ORIGINAL === */
         .logo-container {
             text-align: center;
             margin-bottom: 30px;
@@ -114,7 +111,6 @@
             transform: scale(1.05);
         }
 
-        /* === HEADER ORIGINAL === */
         .login-header {
             margin-bottom: 25px;
         }
@@ -133,7 +129,7 @@
             margin: 0;
         }
 
-        /* === MENSAJE DE ERROR ORIGINAL === */
+        /* Mensaje de error */
         .error {
             background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(231, 76, 60, 0.05) 100%);
             color: var(--danger);
@@ -151,7 +147,7 @@
             margin-right: 8px;
         }
 
-        /* === FORMULARIO ORIGINAL === */
+        /* Formulario */
         .form-group {
             margin-bottom: 22px;
             text-align: left;
@@ -201,7 +197,7 @@
             color: var(--text-light);
         }
 
-        /* === BOTÓN DE LOGIN ORIGINAL === */
+        /* Botón de login */
         .btn-login {
             width: 100%;
             padding: 16px;
@@ -231,7 +227,7 @@
             transform: translateY(0);
         }
 
-        /* === OPCIONES ADICIONALES ORIGINAL === */
+        /* Opciones adicionales */
         .login-options {
             display: flex;
             justify-content: space-between;
@@ -272,7 +268,7 @@
             text-decoration: underline;
         }
 
-        /* === FOOTER ORIGINAL === */
+        /* Footer */
         .footer-text {
             text-align: center;
             margin-top: 25px;
@@ -282,7 +278,7 @@
             border-top: 1px solid rgba(171, 9, 106, 0.1);
         }
 
-        /* === RESPONSIVE ORIGINAL === */
+        /* Responsive */
         @media (max-width: 480px) {
             .login-card {
                 margin: 20px;
@@ -298,7 +294,7 @@
             }
         }
 
-        /* === ANIMACIONES ORIGINALES === */
+        /* Animaciones */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -309,7 +305,7 @@
             100% { transform: rotate(45deg) translateX(100%); }
         }
 
-        /* === SCROLLBAR PERSONALIZADO ORIGINAL === */
+        /* Scrollbar personalizado */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -333,7 +329,7 @@
 <body>
 
     <div class="login-card">
-        <!-- LOGO ORIGINAL -->
+        <!-- LOGO -->
         <div class="logo-container">
             <img src="Sistema de incidencias.png" alt="Logo Sistema de Incidencias" 
                  width="400" height="auto" style="max-width: 100%;">
@@ -385,28 +381,24 @@
         </div>
     </div>
 
-    <!-- Scripts JavaScript -->
-    <script src="js/common.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/usuarios.js"></script>
-    <script src="js/login-controller.js"></script>
-
     <script>
-        // Clase para manejar la autenticación (COMPATIBLE CON TU CÓDIGO)
+        // Clase para manejar la autenticación
         class AuthService {
             constructor() {
+                // Verificar si hay usuarios en localStorage
                 this.usuarios = JSON.parse(localStorage.getItem('usuarios')) || this.getUsuariosIniciales();
                 this.usuarioActual = null;
             }
 
             getUsuariosIniciales() {
+                // Solo usuarios por defecto si no hay ninguno registrado
                 return [
                     {
                         id: 1,
                         nombre: "Administrador",
                         username: "admin",
                         email: "admin@incidencias.com",
-                        password: "admin123",
+                        password: "admin123", // En producción esto debería estar hasheado
                         rol: "administrador",
                         activo: true
                     }
@@ -414,12 +406,14 @@
             }
 
             autenticar(identificador, password) {
+                // Buscar usuario por email o username
                 const usuario = this.usuarios.find(u => 
                     (u.email === identificador || u.username === identificador) && 
                     u.password === password
                 );
 
                 if (usuario) {
+                    // Verificar si el usuario está activo
                     if (!usuario.activo) {
                         return { 
                             success: false, 
@@ -442,6 +436,7 @@
 
             guardarSesion(recordar = false) {
                 if (this.usuarioActual) {
+                    // Guardar datos básicos de sesión
                     const sesionData = {
                         id: this.usuarioActual.id,
                         nombre: this.usuarioActual.nombre,
@@ -450,11 +445,14 @@
                     };
                     
                     if (recordar) {
+                        // Guardar por 30 días
                         localStorage.setItem('sesion', JSON.stringify(sesionData));
                     } else {
+                        // Guardar solo para esta sesión
                         sessionStorage.setItem('sesion', JSON.stringify(sesionData));
                     }
                     
+                    // Guardar también el usuario actual para la página de admin
                     localStorage.setItem('usuarioActual', JSON.stringify(this.usuarioActual));
                 }
             }
@@ -463,17 +461,20 @@
                 const sesion = localStorage.getItem('sesion') || sessionStorage.getItem('sesion');
                 if (sesion) {
                     const sesionData = JSON.parse(sesion);
+                    // Verificar si la sesión no ha expirado (30 días para localStorage)
                     const ahora = new Date().getTime();
-                    const tiempoSesion = 30 * 24 * 60 * 60 * 1000;
+                    const tiempoSesion = 30 * 24 * 60 * 60 * 1000; // 30 días en milisegundos
                     
                     if (localStorage.getItem('sesion')) {
                         if (ahora - sesionData.timestamp < tiempoSesion) {
                             return true;
                         } else {
+                            // Sesión expirada, eliminar
                             localStorage.removeItem('sesion');
                             sessionStorage.removeItem('sesion');
                         }
                     } else if (sessionStorage.getItem('sesion')) {
+                        // Sesión de navegador, válida mientras el navegador esté abierto
                         return true;
                     }
                 }
@@ -495,7 +496,7 @@
             }
         }
 
-        // Controlador del formulario de login (COMPATIBLE)
+        // Controlador del formulario de login
         class LoginController {
             constructor() {
                 this.authService = new AuthService();
@@ -515,10 +516,12 @@
 
             verificarSesionPrevia() {
                 if (this.authService.verificarSesionGuardada()) {
+                    // Redirigir automáticamente si hay sesión guardada
                     const sesion = JSON.parse(localStorage.getItem('sesion') || sessionStorage.getItem('sesion'));
                     const usuario = this.authService.obtenerUsuarioPorId(sesion.id);
                     
                     if (usuario && usuario.activo) {
+                        // Mostrar mensaje de redirección
                         this.mostrarMensaje('Sesión detectada. Redirigiendo...', 'info');
                         
                         setTimeout(() => {
@@ -532,6 +535,7 @@
                 const recordar = localStorage.getItem('recordarUsuario') === 'true';
                 if (recordar) {
                     document.getElementById('remember').checked = true;
+                    // Opcional: cargar último usuario
                     const ultimoUsuario = localStorage.getItem('ultimoUsuario');
                     if (ultimoUsuario) {
                         document.getElementById('identificador').value = ultimoUsuario;
@@ -547,30 +551,38 @@
                 const recordar = document.getElementById("remember").checked;
                 const errorMsg = document.getElementById("error-msg");
 
+                // Limpiar mensaje de error anterior
                 errorMsg.style.display = "none";
                 
+                // Validación básica
                 if (!identificador || !password) {
                     this.mostrarError('Por favor, completa todos los campos');
                     return;
                 }
 
+                // Verificar si hay usuarios registrados
                 if (this.authService.usuarios.length === 0) {
                     this.mostrarError('No hay usuarios registrados. Contacta al administrador.');
                     return;
                 }
 
+                // Mostrar carga
                 const submitBtn = document.querySelector('.btn-login');
                 const originalText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
                 submitBtn.disabled = true;
 
+                // Pequeña pausa para efecto visual
                 await new Promise(resolve => setTimeout(resolve, 500));
 
+                // Intentar autenticar
                 const resultado = this.authService.autenticar(identificador, password);
                 
                 if (resultado.success) {
+                    // Guardar sesión
                     this.authService.guardarSesion(recordar);
                     
+                    // Guardar preferencia de "recordarme"
                     localStorage.setItem('recordarUsuario', recordar);
                     if (recordar) {
                         localStorage.setItem('ultimoUsuario', identificador);
@@ -578,18 +590,23 @@
                         localStorage.removeItem('ultimoUsuario');
                     }
                     
+                    // Actualizar UI
                     submitBtn.innerHTML = '<i class="fas fa-check"></i> ¡Acceso concedido!';
                     
+                    // Redirigir según rol
                     setTimeout(() => {
                         window.location.href = this.authService.redirigirSegunRol(resultado.usuario.rol);
                     }, 800);
                     
                 } else {
+                    // Restaurar botón
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
                     
+                    // Mostrar error
                     this.mostrarError(resultado.message);
                     
+                    // Efecto de shake en el formulario
                     const loginCard = document.querySelector('.login-card');
                     loginCard.style.animation = 'none';
                     setTimeout(() => {
@@ -607,11 +624,14 @@
                     return;
                 }
 
+                // Buscar usuario
                 const usuario = this.authService.usuarios.find(u => 
                     u.email === identificador || u.username === identificador
                 );
 
                 if (usuario) {
+                    // En un sistema real, aquí enviarías un email
+                    // Por ahora solo mostramos un mensaje
                     this.mostrarMensaje(
                         `Se ha enviado un enlace de recuperación a ${usuario.email}. ` +
                         `(Esta es una simulación. En producción se enviaría un email real)`,
@@ -629,20 +649,24 @@
             }
 
             mostrarMensaje(mensaje, tipo = 'info') {
+                // Crear mensaje temporal
                 const mensajeDiv = document.createElement('div');
                 mensajeDiv.className = `error ${tipo === 'info' ? 'info-message' : ''}`;
                 mensajeDiv.innerHTML = `<i class="fas fa-${tipo === 'info' ? 'info-circle' : 'exclamation-circle'}"></i> ${mensaje}`;
                 mensajeDiv.style.display = 'block';
                 
+                // Estilo para mensaje informativo
                 if (tipo === 'info') {
                     mensajeDiv.style.background = 'linear-gradient(135deg, rgba(26, 41, 128, 0.1) 0%, rgba(38, 208, 206, 0.1) 100%)';
                     mensajeDiv.style.color = 'var(--primary-blue)';
                     mensajeDiv.style.borderLeft = '4px solid var(--primary-blue)';
                 }
                 
+                // Insertar antes del formulario
                 const form = document.getElementById('login-form');
                 form.parentNode.insertBefore(mensajeDiv, form);
                 
+                // Eliminar después de 5 segundos
                 setTimeout(() => {
                     mensajeDiv.remove();
                 }, 5000);
@@ -655,12 +679,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             loginController = new LoginController();
             
-            // Verificar si la imagen del logo existe (TU CÓDIGO ORIGINAL)
+            // Verificar si la imagen del logo existe
             const logoImg = document.querySelector('.logo-container img');
             
             logoImg.onerror = function() {
                 console.log("No se encontró la imagen del logo. Verifica que el archivo esté en la misma carpeta.");
                 
+                // Crear un logo alternativo si la imagen no se carga
                 const logoContainer = document.querySelector('.logo-container');
                 logoContainer.innerHTML = `
                     <div style="
@@ -681,7 +706,7 @@
                 `;
             };
             
-            // Efecto de entrada para el formulario (TU CÓDIGO ORIGINAL)
+            // Efecto de entrada para el formulario
             const form = document.getElementById('login-form');
             form.style.opacity = '0';
             form.style.transform = 'translateY(10px)';
@@ -692,7 +717,7 @@
                 form.style.transform = 'translateY(0)';
             }, 300);
 
-            // Efecto de focus mejorado (TU CÓDIGO ORIGINAL)
+            // Efecto de focus mejorado
             document.querySelectorAll('input').forEach(input => {
                 input.addEventListener('focus', function() {
                     this.parentElement.parentElement.style.transform = 'translateY(-2px)';
@@ -703,7 +728,7 @@
                 });
             });
 
-            // Estilo adicional para mensajes informativos (TU CÓDIGO ORIGINAL)
+            // Estilo adicional para mensajes informativos
             const style = document.createElement('style');
             style.textContent = `
                 .info-message {
@@ -715,7 +740,7 @@
             document.head.appendChild(style);
         });
 
-        // Para desarrollo: agregar información útil (TU CÓDIGO ORIGINAL)
+        // Para desarrollo: agregar información útil
         console.log('=== SISTEMA DE LOGIN ===');
         console.log('Los usuarios se cargan desde localStorage');
         console.log('Para probar con usuario demo:');
