@@ -6,19 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* === TUS COLORES ORIGINALES EXACTAMENTE === */
         :root {
-            /* PALETA DE COLORES ARMÓNICA */
-            --primary-blue: #1a2980;        /* Azul principal más oscuro */
-            --secondary-blue: #26d0ce;      /* Turquesa para acentos */
-            --accent-color: #AB096A;        /* ROSA/VINO para destacar */
-            --light-accent: #f8d4e8;        /* Rosa claro para fondos */
-            --gray-dark: #2c3e50;           /* Gris oscuro para sidebar */
-            --gray-medium: #34495e;         /* Gris medio */
-            --gray-light: #ecf0f1;          /* Gris claro para fondo */
-            --success: #27ae60;             /* Verde éxito */
-            --warning: #f39c12;             /* Naranja advertencia */
-            --danger: #e74c3c;              /* Rojo peligro */
+            --primary-blue: #1a2980;
+            --secondary-blue: #26d0ce;
+            --accent-color: #AB096A;
+            --light-accent: #f8d4e8;
+            --gray-dark: #2c3e50;
+            --gray-medium: #34495e;
+            --gray-light: #ecf0f1;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
             --white: #ffffff;
             --text-primary: #333333;
             --text-secondary: #666666;
@@ -38,7 +36,6 @@
             min-height: 100vh;
         }
 
-        /* === BARRA SUPERIOR ORIGINAL === */
         .top-bar {
             background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
             color: var(--white);
@@ -66,25 +63,9 @@
             height: 40px;
         }
 
-        .logo-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 8px;
-            display: block;
-        }
-
-        .logo-fallback {
+        .logo-svg {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, var(--white), var(--accent-color));
-            border-radius: 8px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            color: var(--white);
-            font-weight: bold;
-            font-size: 1.2rem;
         }
 
         .logo-text {
@@ -115,7 +96,6 @@
             font-weight: 500;
         }
 
-        /* Navegación ORIGINAL */
         .nav-menu {
             display: flex;
             gap: 5px;
@@ -145,7 +125,6 @@
             color: var(--white);
         }
 
-        /* Información del usuario ORIGINAL */
         .top-user-info {
             display: flex;
             align-items: center;
@@ -182,14 +161,12 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
-        /* Contenedor principal ORIGINAL */
         .main-container {
             max-width: 1400px;
             margin: 30px auto;
             padding: 0 40px;
         }
 
-        /* Título de la página ORIGINAL */
         .page-title {
             color: var(--primary-blue);
             font-size: 1.8rem;
@@ -217,7 +194,6 @@
             gap: 10px;
         }
 
-        /* Botones ORIGINALES */
         .btn {
             padding: 12px 25px;
             border: none;
@@ -239,10 +215,6 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .btn:active {
-            transform: translateY(0);
-        }
-
         .btn-primary {
             background: linear-gradient(135deg, var(--accent-color) 0%, #8A0755 100%);
         }
@@ -255,27 +227,14 @@
             background: linear-gradient(135deg, var(--gray-medium) 0%, var(--gray-dark) 100%);
         }
 
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, var(--gray-dark) 0%, #2c3e50 100%);
-        }
-
         .btn-success {
             background: linear-gradient(135deg, var(--success) 0%, #2ecc71 100%);
-        }
-
-        .btn-success:hover {
-            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
         }
 
         .btn-danger {
             background: linear-gradient(135deg, var(--danger) 0%, #c0392b 100%);
         }
 
-        .btn-danger:hover {
-            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
-        }
-
-        /* Tarjeta de formulario ORIGINAL */
         .form-card {
             background: linear-gradient(135deg, rgba(26, 41, 128, 0.05) 0%, rgba(38, 208, 206, 0.05) 100%);
             border-radius: 12px;
@@ -385,11 +344,6 @@
             accent-color: var(--accent-color);
         }
 
-        .checkbox-group label {
-            margin-bottom: 0;
-            cursor: pointer;
-        }
-
         .form-actions {
             display: flex;
             justify-content: flex-end;
@@ -399,7 +353,6 @@
             border-top: 1px solid rgba(171, 9, 106, 0.2);
         }
 
-        /* Tabla de usuarios ORIGINAL */
         .table-container {
             background: var(--white);
             border-radius: 12px;
@@ -433,10 +386,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-
-        .table-header h3 i {
-            color: var(--accent-color);
         }
 
         .search-box {
@@ -474,17 +423,6 @@
             color: var(--primary-blue);
             font-weight: 600;
             border-bottom: 2px solid var(--accent-color);
-            position: relative;
-        }
-
-        table th:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 20%;
-            height: 60%;
-            width: 1px;
-            background: rgba(171, 9, 106, 0.3);
         }
 
         table td {
@@ -498,7 +436,6 @@
             background-color: rgba(171, 9, 106, 0.05);
         }
 
-        /* Badges para roles ORIGINALES */
         .role-badge {
             display: inline-block;
             padding: 6px 15px;
@@ -531,11 +468,6 @@
             display: flex;
             align-items: center;
             gap: 5px;
-        }
-
-        .status-active i,
-        .status-inactive i {
-            font-size: 0.7rem;
         }
 
         .action-buttons {
@@ -573,7 +505,6 @@
             background-color: rgba(26, 41, 128, 0.2);
         }
 
-        /* Mensajes de alerta */
         .alert {
             padding: 15px 20px;
             border-radius: 8px;
@@ -605,11 +536,6 @@
             gap: 5px;
         }
 
-        .password-requirements i {
-            color: var(--accent-color);
-        }
-
-        /* Responsive ORIGINAL */
         @media (max-width: 1024px) {
             .main-container {
                 padding: 0 20px;
@@ -700,7 +626,6 @@
             }
         }
 
-        /* Animaciones ORIGINALES */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -712,16 +637,22 @@
     </style>
 </head>
 <body>
-    <!-- BARRA SUPERIOR ORIGINAL -->
+    <!-- BARRA SUPERIOR -->
     <div class="top-bar">
         <div class="logo-container">
-            <!-- Logo ORIGINAL -->
             <div class="logo-wrapper">
-                <img src="logo sin fondo.png" alt="Logo del Sistema" class="logo-img" 
-                     onerror="this.onerror=null; this.style.display='none'; document.querySelector('.logo-fallback').style.display='flex'">
-                <div class="logo-fallback">
-                    <i class="fas fa-users"></i>
-                </div>
+                <svg class="logo-svg" viewBox="0 0 50 50">
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#1a2980;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#AB096A;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <rect width="50" height="50" rx="8" fill="url(#grad1)"/>
+                    <path d="M15 20 L25 15 L35 20 L30 30 L20 30 Z" fill="white" opacity="0.9"/>
+                    <circle cx="25" cy="22" r="3" fill="white"/>
+                    <path d="M20 35 L30 35 L28 40 L22 40 Z" fill="white" opacity="0.7"/>
+                </svg>
             </div>
             
             <div class="logo-text">
@@ -731,32 +662,29 @@
         </div>
         
         <nav class="nav-menu">
-            <a href="admin.html" class="nav-link">
+            <a href="dashboard.html" class="nav-link">
                 <i class="fas fa-chart-line"></i> Dashboard
             </a>
             <a href="registro.html" class="nav-link active">
                 <i class="fas fa-users"></i> Usuarios
             </a>
-            <a href="#" class="nav-link">
+            <a href="dashboard.html#incidenciasSection" class="nav-link">
                 <i class="fas fa-exclamation-circle"></i> Incidencias
-            </a>
-            <a href="#" class="nav-link">
-                <i class="fas fa-cog"></i> Configuración
             </a>
         </nav>
         
         <div class="top-user-info">
-            <div class="top-user-avatar" id="userAvatar" data-tooltip="Administrador">AD</div>
+            <div class="top-user-avatar" id="userAvatar">AD</div>
             <div class="user-details">
-                <div class="user-name" id="userName">Administrador</div>
-                <div class="user-role" id="userRole">Gestión de Usuarios</div>
+                <div class="user-name" id="userName">Cargando...</div>
+                <div class="user-role" id="userRole">Usuario</div>
             </div>
         </div>
     </div>
 
-    <!-- CONTENIDO PRINCIPAL ORIGINAL -->
+    <!-- CONTENIDO PRINCIPAL -->
     <div class="main-container">
-        <!-- TÍTULO Y BOTÓN ORIGINAL -->
+        <!-- TÍTULO Y BOTÓN -->
         <div class="page-title">
             <div class="page-title-content">
                 <i class="fas fa-user-plus"></i>
@@ -772,7 +700,7 @@
             <i class="fas fa-check-circle"></i> <span id="successText">Usuario guardado exitosamente</span>
         </div>
 
-        <!-- FORMULARIO DE REGISTRO ORIGINAL -->
+        <!-- FORMULARIO DE REGISTRO -->
         <div class="form-card" id="formRegistro">
             <h3><i class="fas fa-user-edit"></i> Información del Usuario</h3>
             
@@ -794,11 +722,11 @@
                         <label>Empresa</label>
                         <select class="select-control" id="empresa">
                             <option value="">Seleccionar empresa</option>
-                            <option value="zoxo">Zoxo</option>
-                            <option value="codiversa">Codiversa</option>
-                            <option value="copesa">Copesa</option>
-                            <option value="sitraq">Sitraq</option>
-                            <option value="corevsa">Corevsa</option>
+                            <option value="Zoxo">Zoxo</option>
+                            <option value="Codiversa">Codiversa</option>
+                            <option value="Copesa">Copesa</option>
+                            <option value="Sitraq">Sitraq</option>
+                            <option value="Corevsa">Corevsa</option>
                         </select>
                     </div>
                     
@@ -830,6 +758,11 @@
                     </div>
                 </div>
                 
+                <div class="checkbox-group">
+                    <input type="checkbox" id="activo" checked>
+                    <label for="activo">Usuario activo</label>
+                </div>
+                
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" id="btnCancelar">
                         Cancelar
@@ -841,7 +774,7 @@
             </form>
         </div>
 
-        <!-- LISTA DE USUARIOS REGISTRADOS ORIGINAL -->
+        <!-- LISTA DE USUARIOS REGISTRADOS -->
         <div class="table-container">
             <div class="table-header">
                 <h3><i class="fas fa-list"></i> Usuarios Registrados</h3>
@@ -867,245 +800,34 @@
         </div>
     </div>
 
-    <!-- Scripts JavaScript COMPLETOS -->
     <script>
         // ============================================
-        // FUNCIONES COMUNES UTILITARIAS
+        // CLASES DE SERVICIO
         // ============================================
-        class Utilidades {
-            constructor() {}
-            
-            mostrarExito(mensaje, duracion = 3000) {
-                this.mostrarMensaje(mensaje, 'success', duracion);
-            }
-            
-            mostrarError(mensaje, duracion = 5000) {
-                this.mostrarMensaje(mensaje, 'error', duracion);
-            }
-            
-            mostrarMensaje(texto, tipo = 'info', duracion = 3000) {
-                const mensajeDiv = document.createElement('div');
-                mensajeDiv.className = `alert alert-${tipo}`;
-                mensajeDiv.innerHTML = `
-                    <i class="fas fa-${tipo === 'success' ? 'check-circle' : 
-                                   tipo === 'error' ? 'exclamation-circle' : 
-                                   'info-circle'}"></i> 
-                    ${texto}
-                `;
-                
-                mensajeDiv.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    padding: 15px 20px;
-                    border-radius: 8px;
-                    background: ${tipo === 'success' ? '#d4edda' : 
-                                 tipo === 'error' ? '#f8d7da' : '#d1ecf1'};
-                    color: ${tipo === 'success' ? '#155724' : 
-                            tipo === 'error' ? '#721c24' : '#0c5460'};
-                    border-left: 4px solid ${tipo === 'success' ? '#28a745' : 
-                                           tipo === 'error' ? '#dc3545' : '#17a2b8'};
-                    z-index: 9999;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                    animation: slideIn 0.3s ease-out;
-                    max-width: 400px;
-                `;
-                
-                document.body.appendChild(mensajeDiv);
-                
-                setTimeout(() => {
-                    mensajeDiv.style.animation = 'slideOut 0.3s ease-out forwards';
-                    setTimeout(() => {
-                        if (mensajeDiv.parentNode) {
-                            mensajeDiv.parentNode.removeChild(mensajeDiv);
-                        }
-                    }, 300);
-                }, duracion);
-                
-                if (!document.querySelector('#animation-styles')) {
-                    const style = document.createElement('style');
-                    style.id = 'animation-styles';
-                    style.textContent = `
-                        @keyframes slideIn {
-                            from { transform: translateX(100%); opacity: 0; }
-                            to { transform: translateX(0); opacity: 1; }
-                        }
-                        @keyframes slideOut {
-                            from { transform: translateX(0); opacity: 1; }
-                            to { transform: translateX(100%); opacity: 0; }
-                        }
-                    `;
-                    document.head.appendChild(style);
-                }
-            }
-            
-            validarEmail(email) {
-                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return regex.test(email);
-            }
-            
-            validarPassword(password) {
-                return password.length >= 8 && 
-                       /[A-Z]/.test(password) && 
-                       /\d/.test(password);
-            }
-            
-            obtenerIniciales(nombre) {
-                if (!nombre) return 'U';
-                return nombre.split(' ')
-                    .map(word => word[0])
-                    .join('')
-                    .toUpperCase()
-                    .substring(0, 2);
-            }
-        }
-        
-        const util = new Utilidades();
-
-        // ============================================
-        // SISTEMA DE AUTENTICACIÓN
-        // ============================================
-        class AuthService {
+        class StorageService {
             constructor() {
-                this.usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-                this.usuarioActual = null;
-                this.verificarSesion();
+                this.incidenciasKey = 'incidencias_sistema';
+                this.usuariosKey = 'usuarios_sistema';
             }
             
-            autenticar(identificador, password) {
-                const usuario = this.usuarios.find(u => 
-                    (u.email === identificador || u.username === identificador)
-                );
-                
-                if (!usuario) {
-                    return { 
-                        success: false, 
-                        message: "Usuario no encontrado" 
-                    };
-                }
-                
-                if (!usuario.password) {
-                    return { 
-                        success: false, 
-                        message: "Este usuario no tiene contraseña configurada" 
-                    };
-                }
-                
-                if (usuario.password !== password) {
-                    return { 
-                        success: false, 
-                        message: "Contraseña incorrecta" 
-                    };
-                }
-                
-                if (usuario.activo === false) {
-                    return { 
-                        success: false, 
-                        message: "Usuario desactivado. Contacta al administrador." 
-                    };
-                }
-                
-                this.usuarioActual = usuario;
-                return { 
-                    success: true, 
-                    usuario: usuario 
-                };
+            guardarIncidencias(incidencias) {
+                localStorage.setItem(this.incidenciasKey, JSON.stringify(incidencias));
             }
             
-            guardarSesion(usuario, recordar = false) {
-                const sesionData = {
-                    id: usuario.id,
-                    nombre: usuario.nombre,
-                    username: usuario.username,
-                    email: usuario.email,
-                    rol: usuario.rol,
-                    empresa: usuario.empresa,
-                    timestamp: new Date().getTime()
-                };
-                
-                if (recordar) {
-                    localStorage.setItem('sesion', JSON.stringify(sesionData));
-                } else {
-                    sessionStorage.setItem('sesion', JSON.stringify(sesionData));
-                }
-                
-                localStorage.setItem('usuarioActual', JSON.stringify(usuario));
+            obtenerIncidencias() {
+                const datos = localStorage.getItem(this.incidenciasKey);
+                return datos ? JSON.parse(datos) : [];
             }
             
-            verificarSesion() {
-                const sesion = localStorage.getItem('sesion') || sessionStorage.getItem('sesion');
-                
-                if (sesion) {
-                    const sesionData = JSON.parse(sesion);
-                    const ahora = new Date().getTime();
-                    
-                    if (localStorage.getItem('sesion')) {
-                        const tiempoSesion = 30 * 24 * 60 * 60 * 1000;
-                        if (ahora - sesionData.timestamp < tiempoSesion) {
-                            const usuario = this.usuarios.find(u => u.id === sesionData.id);
-                            if (usuario && usuario.activo !== false) {
-                                this.usuarioActual = usuario;
-                                return true;
-                            }
-                        } else {
-                            this.cerrarSesion();
-                        }
-                    } else if (sessionStorage.getItem('sesion')) {
-                        const usuario = this.usuarios.find(u => u.id === sesionData.id);
-                        if (usuario && usuario.activo !== false) {
-                            this.usuarioActual = usuario;
-                            return true;
-                        }
-                    }
-                }
-                
-                return false;
+            guardarUsuarios(usuarios) {
+                localStorage.setItem(this.usuariosKey, JSON.stringify(usuarios));
             }
             
-            obtenerUsuarioActual() {
-                if (!this.usuarioActual) {
-                    const usuarioData = localStorage.getItem('usuarioActual');
-                    if (usuarioData) {
-                        this.usuarioActual = JSON.parse(usuarioData);
-                    }
-                }
-                return this.usuarioActual;
-            }
-            
-            cerrarSesion() {
-                this.usuarioActual = null;
-                localStorage.removeItem('sesion');
-                sessionStorage.removeItem('sesion');
-                localStorage.removeItem('usuarioActual');
-            }
-            
-            tienePermiso(rolRequerido) {
-                const usuario = this.obtenerUsuarioActual();
-                if (!usuario) return false;
-                return usuario.rol === rolRequerido;
-            }
-            
-            redirigirSegunRol() {
-                const usuario = this.obtenerUsuarioActual();
-                if (!usuario) return 'index.html';
-                return 'admin.html';
-            }
-        }
-        
-        const auth = new AuthService();
-
-        // ============================================
-        // GESTIÓN DE USUARIOS
-        // ============================================
-        class UsuarioService {
-            constructor() {
-                this.usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-                this.cargarUsuariosDemoSiVacio();
-            }
-            
-            cargarUsuariosDemoSiVacio() {
-                if (this.usuarios.length === 0) {
-                    this.usuarios = [
+            obtenerUsuarios() {
+                const datos = localStorage.getItem(this.usuariosKey);
+                if (!datos) {
+                    // Crear usuarios demo si no existen
+                    const usuariosDemo = [
                         {
                             id: 1,
                             nombre: "Administrador Principal",
@@ -1116,10 +838,72 @@
                             empresa: "Sistema",
                             activo: true,
                             fechaRegistro: new Date().toISOString().split('T')[0]
+                        },
+                        {
+                            id: 2,
+                            nombre: "Técnico Demo",
+                            username: "tecnico",
+                            email: "tecnico@empresa.com",
+                            password: "Tecnico123",
+                            rol: "tecnico",
+                            empresa: "Zoxo",
+                            activo: true,
+                            fechaRegistro: "2024-01-15"
                         }
                     ];
-                    this.guardarEnStorage();
+                    this.guardarUsuarios(usuariosDemo);
+                    return usuariosDemo;
                 }
+                return JSON.parse(datos);
+            }
+        }
+
+        class AuthService {
+            constructor() {
+                this.storage = new StorageService();
+                this.usuarios = this.storage.obtenerUsuarios();
+                this.usuarioActual = null;
+            }
+            
+            verificarSesion() {
+                const sesion = localStorage.getItem('sesion_activa') || sessionStorage.getItem('sesion_activa');
+                
+                if (sesion) {
+                    const sesionData = JSON.parse(sesion);
+                    const usuario = this.usuarios.find(u => u.id === sesionData.id);
+                    
+                    if (usuario && usuario.activo !== false) {
+                        this.usuarioActual = usuario;
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+            
+            obtenerUsuarioActual() {
+                if (!this.usuarioActual) {
+                    const sesion = localStorage.getItem('sesion_activa') || sessionStorage.getItem('sesion_activa');
+                    if (sesion) {
+                        const sesionData = JSON.parse(sesion);
+                        this.usuarioActual = this.usuarios.find(u => u.id === sesionData.id);
+                    }
+                }
+                return this.usuarioActual;
+            }
+            
+            cerrarSesion() {
+                this.usuarioActual = null;
+                localStorage.removeItem('sesion_activa');
+                sessionStorage.removeItem('sesion_activa');
+                window.location.href = 'index.html';
+            }
+        }
+
+        class UsuarioService {
+            constructor() {
+                this.storage = new StorageService();
+                this.usuarios = this.storage.obtenerUsuarios();
             }
             
             obtenerUsuarios() {
@@ -1130,34 +914,25 @@
                 return this.usuarios.find(u => u.id === id);
             }
             
-            buscarUsuarioPorCredencial(identificador) {
-                return this.usuarios.find(u => 
-                    u.email === identificador || u.username === identificador
-                );
-            }
-            
             guardarUsuario(usuarioData) {
                 if (usuarioData.id) {
+                    // Editar usuario existente
                     const index = this.usuarios.findIndex(u => u.id === usuarioData.id);
                     if (index !== -1) {
+                        // Mantener contraseña si no se cambia
                         if (!usuarioData.password && this.usuarios[index].password) {
                             usuarioData.password = this.usuarios[index].password;
                         }
                         this.usuarios[index] = usuarioData;
                     }
                 } else {
+                    // Nuevo usuario
                     usuarioData.id = this.generarNuevoId();
                     usuarioData.fechaRegistro = new Date().toISOString().split('T')[0];
-                    usuarioData.activo = true;
                     this.usuarios.push(usuarioData);
                 }
                 
                 this.guardarEnStorage();
-                
-                if (window.auth) {
-                    auth.usuarios = this.usuarios;
-                }
-                
                 return usuarioData;
             }
             
@@ -1197,47 +972,42 @@
             }
             
             guardarEnStorage() {
-                localStorage.setItem('usuarios', JSON.stringify(this.usuarios));
-            }
-            
-            reiniciarDatosDemo() {
-                this.usuarios = [
-                    {
-                        id: 1,
-                        nombre: "Administrador Principal",
-                        username: "admin",
-                        email: "admin@incidencias.com",
-                        password: "Admin123",
-                        rol: "administrador",
-                        empresa: "Sistema",
-                        activo: true,
-                        fechaRegistro: new Date().toISOString().split('T')[0]
-                    }
-                ];
-                this.guardarEnStorage();
-                return this.usuarios;
+                this.storage.guardarUsuarios(this.usuarios);
             }
         }
-        
-        const usuarioService = new UsuarioService();
 
         // ============================================
-        // CONTROLADOR DE REGISTRO
+        // CONTROLADOR PRINCIPAL
         // ============================================
         class RegistroController {
             constructor() {
+                this.auth = new AuthService();
+                this.usuarioService = new UsuarioService();
                 this.usuarioEditando = null;
                 this.init();
             }
             
             init() {
-                document.addEventListener('DOMContentLoaded', () => {
-                    this.cargarElementos();
-                    this.configurarEventos();
-                    this.cargarUsuarios();
-                    this.verificarPermisos();
-                    this.cargarInfoUsuario();
-                });
+                this.verificarSesion();
+                this.cargarElementos();
+                this.configurarEventos();
+                this.cargarInfoUsuario();
+                this.cargarUsuarios();
+            }
+            
+            verificarSesion() {
+                if (!this.auth.verificarSesion()) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+                const usuarioActual = this.auth.obtenerUsuarioActual();
+                if (usuarioActual && usuarioActual.rol !== 'administrador') {
+                    this.mostrarMensaje('No tienes permisos para gestionar usuarios', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                }
             }
             
             cargarElementos() {
@@ -1250,6 +1020,7 @@
                 this.selectRol = document.getElementById('rol');
                 this.selectEmpresa = document.getElementById('empresa');
                 this.inputId = document.getElementById('usuarioId');
+                this.checkboxActivo = document.getElementById('activo');
                 this.btnGuardar = document.getElementById('btnGuardar');
                 this.btnCancelar = document.getElementById('btnCancelar');
                 this.btnNuevo = document.getElementById('btnNuevoUsuario');
@@ -1260,84 +1031,50 @@
             }
             
             configurarEventos() {
-                if (this.form) {
-                    this.form.addEventListener('submit', (e) => this.guardarUsuario(e));
-                }
-                
-                if (this.btnNuevo) {
-                    this.btnNuevo.addEventListener('click', () => this.nuevoUsuario());
-                }
-                
-                if (this.btnCancelar) {
-                    this.btnCancelar.addEventListener('click', () => this.cancelarEdicion());
-                }
-                
-                if (this.inputBuscar) {
-                    this.inputBuscar.addEventListener('input', (e) => this.buscarUsuarios(e.target.value));
-                }
-                
-                if (this.inputPassword) {
-                    this.inputPassword.addEventListener('input', () => this.validarPasswordEnTiempoReal());
-                }
-                
-                if (this.inputConfirmPassword) {
-                    this.inputConfirmPassword.addEventListener('input', () => this.validarPasswordEnTiempoReal());
-                }
+                this.form.addEventListener('submit', (e) => this.guardarUsuario(e));
+                this.btnNuevo.addEventListener('click', () => this.nuevoUsuario());
+                this.btnCancelar.addEventListener('click', () => this.cancelarEdicion());
+                this.inputBuscar.addEventListener('input', (e) => this.buscarUsuarios(e.target.value));
+                this.inputPassword.addEventListener('input', () => this.validarPasswordEnTiempoReal());
+                this.inputConfirmPassword.addEventListener('input', () => this.validarPasswordEnTiempoReal());
             }
             
             cargarInfoUsuario() {
-                const usuario = auth.obtenerUsuarioActual();
+                const usuario = this.auth.obtenerUsuarioActual();
                 if (usuario) {
                     document.getElementById('userName').textContent = usuario.nombre;
-                    document.getElementById('userRole').textContent = usuario.rol.charAt(0).toUpperCase() + usuario.rol.slice(1);
-                    const avatar = document.getElementById('userAvatar');
-                    avatar.textContent = util.obtenerIniciales(usuario.nombre);
-                    avatar.title = usuario.nombre;
+                    document.getElementById('userRole').textContent = usuario.rol;
+                    document.getElementById('userAvatar').textContent = 
+                        usuario.nombre.charAt(0).toUpperCase();
+                    
+                    // Configurar logout
+                    document.addEventListener('click', (e) => {
+                        if (e.target.closest('#userAvatar') || e.target.closest('.user-details')) {
+                            if (confirm('¿Deseas cerrar sesión?')) {
+                                this.auth.cerrarSesion();
+                            }
+                        }
+                    });
                 }
             }
             
-            verificarPermisos() {
-                const usuarioActual = auth.obtenerUsuarioActual();
-                if (!usuarioActual || usuarioActual.rol !== 'administrador') {
-                    util.mostrarError('No tienes permisos para gestionar usuarios. Redirigiendo...');
-                    setTimeout(() => {
-                        window.location.href = 'admin.html';
-                    }, 2000);
-                }
-            }
-            
-            async cargarUsuarios(filtro = '') {
+            cargarUsuarios(filtro = '') {
                 try {
-                    const usuarios = usuarioService.buscarUsuarios(filtro);
+                    const usuarios = this.usuarioService.buscarUsuarios(filtro);
                     this.renderizarTabla(usuarios);
                 } catch (error) {
-                    util.mostrarError('Error al cargar usuarios: ' + error.message);
+                    this.mostrarMensaje('Error al cargar usuarios: ' + error.message, 'error');
                 }
             }
             
             renderizarTabla(usuarios) {
-                if (!this.tablaUsuarios) return;
-                
                 this.tablaUsuarios.innerHTML = '';
                 
                 usuarios.forEach(usuario => {
                     const fila = document.createElement('tr');
                     
-                    let claseRol = '';
-                    let rolTexto = '';
-                    switch(usuario.rol) {
-                        case 'administrador': 
-                            claseRol = 'role-admin'; 
-                            rolTexto = 'Administrador';
-                            break;
-                        case 'tecnico': 
-                            claseRol = 'role-tecnico'; 
-                            rolTexto = 'Técnico';
-                            break;
-                        default:
-                            claseRol = 'role-usuario';
-                            rolTexto = usuario.rol || 'Usuario';
-                    }
+                    const claseRol = usuario.rol === 'administrador' ? 'role-admin' : 'role-tecnico';
+                    const rolTexto = usuario.rol === 'administrador' ? 'Administrador' : 'Técnico';
                     
                     fila.innerHTML = `
                         <td>${usuario.nombre}</td>
@@ -1364,7 +1101,7 @@
                 });
             }
             
-            async guardarUsuario(e) {
+            guardarUsuario(e) {
                 e.preventDefault();
                 
                 if (!this.validarFormulario()) {
@@ -1374,80 +1111,86 @@
                 try {
                     const usuarioData = this.obtenerDatosFormulario();
                     
-                    const usuarioExistente = usuarioService.validarCredencialesUnicas(
+                    const usuarioExistente = this.usuarioService.validarCredencialesUnicas(
                         usuarioData.username, 
                         usuarioData.email, 
                         usuarioData.id || null
                     );
                     
                     if (usuarioExistente) {
-                        util.mostrarError('El nombre de usuario o email ya están registrados');
+                        this.mostrarMensaje('El nombre de usuario o email ya están registrados', 'error');
                         return;
                     }
                     
                     this.estadoCargando(true, 'Guardando...');
                     
-                    await usuarioService.guardarUsuario(usuarioData);
-                    
-                    await this.cargarUsuarios();
-                    
-                    this.limpiarFormulario();
-                    
-                    this.estadoCargando(false);
-                    this.mostrarExitoEnPagina(`Usuario ${usuarioData.id ? 'actualizado' : 'registrado'} exitosamente`);
+                    setTimeout(() => {
+                        this.usuarioService.guardarUsuario(usuarioData);
+                        this.cargarUsuarios();
+                        this.limpiarFormulario();
+                        this.estadoCargando(false);
+                        this.mostrarExitoEnPagina(`Usuario ${usuarioData.id ? 'actualizado' : 'registrado'} exitosamente`);
+                    }, 500);
                     
                 } catch (error) {
                     this.estadoCargando(false);
-                    util.mostrarError('Error al guardar usuario: ' + error.message);
+                    this.mostrarMensaje('Error al guardar usuario: ' + error.message, 'error');
                 }
             }
             
             validarFormulario() {
-                if (!this.inputNombre.value.trim()) {
-                    util.mostrarError('El nombre es requerido');
-                    this.inputNombre.focus();
-                    return false;
+                // Validación básica
+                const validaciones = [
+                    { campo: this.inputNombre, mensaje: 'El nombre es requerido' },
+                    { campo: this.inputEmail, mensaje: 'El email es requerido' },
+                    { campo: this.inputUsername, mensaje: 'El nombre de usuario es requerido' },
+                    { campo: this.selectRol, mensaje: 'Debes seleccionar un rol' }
+                ];
+                
+                for (const validacion of validaciones) {
+                    if (!validacion.campo.value.trim()) {
+                        this.mostrarMensaje(validacion.mensaje, 'error');
+                        validacion.campo.focus();
+                        return false;
+                    }
                 }
                 
-                if (!this.inputEmail.value.trim()) {
-                    util.mostrarError('El email es requerido');
+                // Validar email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(this.inputEmail.value)) {
+                    this.mostrarMensaje('Ingresa un email válido', 'error');
                     this.inputEmail.focus();
                     return false;
                 }
                 
-                if (!util.validarEmail(this.inputEmail.value)) {
-                    util.mostrarError('Ingresa un email válido');
-                    this.inputEmail.focus();
-                    return false;
-                }
-                
-                if (!this.inputUsername.value.trim()) {
-                    util.mostrarError('El nombre de usuario es requerido');
-                    this.inputUsername.focus();
-                    return false;
-                }
-                
-                if (!this.selectRol.value) {
-                    util.mostrarError('Debes seleccionar un rol');
-                    this.selectRol.focus();
-                    return false;
-                }
-                
+                // Validar contraseña
                 if (!this.usuarioEditando || this.inputPassword.value) {
                     if (!this.inputPassword.value) {
-                        util.mostrarError('La contraseña es requerida');
+                        this.mostrarMensaje('La contraseña es requerida', 'error');
                         this.inputPassword.focus();
                         return false;
                     }
                     
-                    if (!util.validarPassword(this.inputPassword.value)) {
-                        util.mostrarError('La contraseña debe tener al menos 8 caracteres, una mayúscula y un número');
+                    if (this.inputPassword.value.length < 8) {
+                        this.mostrarMensaje('La contraseña debe tener al menos 8 caracteres', 'error');
+                        this.inputPassword.focus();
+                        return false;
+                    }
+                    
+                    if (!/[A-Z]/.test(this.inputPassword.value)) {
+                        this.mostrarMensaje('La contraseña debe tener al menos una mayúscula', 'error');
+                        this.inputPassword.focus();
+                        return false;
+                    }
+                    
+                    if (!/\d/.test(this.inputPassword.value)) {
+                        this.mostrarMensaje('La contraseña debe tener al menos un número', 'error');
                         this.inputPassword.focus();
                         return false;
                     }
                     
                     if (this.inputPassword.value !== this.inputConfirmPassword.value) {
-                        util.mostrarError('Las contraseñas no coinciden');
+                        this.mostrarMensaje('Las contraseñas no coinciden', 'error');
                         this.inputConfirmPassword.focus();
                         return false;
                     }
@@ -1457,25 +1200,25 @@
             }
             
             validarPasswordEnTiempoReal() {
-                if (!this.inputPassword || !this.inputConfirmPassword) return;
-                
                 const password = this.inputPassword.value;
                 const confirmPassword = this.inputConfirmPassword.value;
                 
                 this.inputPassword.style.borderColor = '';
                 this.inputConfirmPassword.style.borderColor = '';
                 
-                if (password && !util.validarPassword(password)) {
-                    this.inputPassword.style.borderColor = 'var(--warning)';
-                } else if (password && util.validarPassword(password)) {
-                    this.inputPassword.style.borderColor = 'var(--success)';
+                if (password) {
+                    if (password.length >= 8 && /[A-Z]/.test(password) && /\d/.test(password)) {
+                        this.inputPassword.style.borderColor = '#27ae60';
+                    } else {
+                        this.inputPassword.style.borderColor = '#f39c12';
+                    }
                 }
                 
                 if (confirmPassword) {
-                    if (password !== confirmPassword) {
-                        this.inputConfirmPassword.style.borderColor = 'var(--danger)';
-                    } else if (password === confirmPassword && password.length > 0) {
-                        this.inputConfirmPassword.style.borderColor = 'var(--success)';
+                    if (password === confirmPassword && password.length > 0) {
+                        this.inputConfirmPassword.style.borderColor = '#27ae60';
+                    } else if (confirmPassword) {
+                        this.inputConfirmPassword.style.borderColor = '#e74c3c';
                     }
                 }
             }
@@ -1488,8 +1231,7 @@
                     username: this.inputUsername.value,
                     rol: this.selectRol.value,
                     empresa: this.selectEmpresa.value,
-                    activo: true,
-                    fechaRegistro: new Date().toISOString().split('T')[0]
+                    activo: this.checkboxActivo.checked
                 };
                 
                 if (this.inputPassword.value) {
@@ -1503,11 +1245,9 @@
             
             nuevoUsuario() {
                 this.limpiarFormulario();
-                if (document.getElementById('formRegistro')) {
-                    document.getElementById('formRegistro').scrollIntoView({ 
-                        behavior: 'smooth' 
-                    });
-                }
+                document.getElementById('formRegistro').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
             }
             
             cancelarEdicion() {
@@ -1515,26 +1255,20 @@
             }
             
             limpiarFormulario() {
-                if (this.form) {
-                    this.form.reset();
-                    this.inputId.value = '';
-                    this.btnGuardar.innerHTML = '<i class="fas fa-save"></i> Guardar Usuario';
-                    this.usuarioEditando = null;
-                    
-                    if (this.inputPassword) {
-                        this.inputPassword.style.borderColor = '';
-                    }
-                    if (this.inputConfirmPassword) {
-                        this.inputConfirmPassword.style.borderColor = '';
-                    }
-                    
-                    this.successMessage.style.display = 'none';
-                }
+                this.form.reset();
+                this.inputId.value = '';
+                this.btnGuardar.innerHTML = '<i class="fas fa-save"></i> Guardar Usuario';
+                this.usuarioEditando = null;
+                this.checkboxActivo.checked = true;
+                this.successMessage.style.display = 'none';
+                
+                this.inputPassword.style.borderColor = '';
+                this.inputConfirmPassword.style.borderColor = '';
             }
             
-            async editarUsuario(id) {
+            editarUsuario(id) {
                 try {
-                    const usuario = usuarioService.obtenerUsuarioPorId(id);
+                    const usuario = this.usuarioService.obtenerUsuarioPorId(id);
                     
                     if (usuario) {
                         this.usuarioEditando = usuario;
@@ -1545,29 +1279,33 @@
                         this.inputUsername.value = usuario.username;
                         this.selectRol.value = usuario.rol;
                         this.selectEmpresa.value = usuario.empresa || '';
+                        this.checkboxActivo.checked = usuario.activo;
                         
                         this.inputPassword.value = '';
                         this.inputConfirmPassword.value = '';
                         
                         this.btnGuardar.innerHTML = '<i class="fas fa-save"></i> Actualizar Usuario';
                         
-                        if (document.getElementById('formRegistro')) {
-                            document.getElementById('formRegistro').scrollIntoView({ 
-                                behavior: 'smooth' 
-                            });
-                        }
+                        document.getElementById('formRegistro').scrollIntoView({ 
+                            behavior: 'smooth' 
+                        });
                     }
                 } catch (error) {
-                    util.mostrarError('Error al cargar usuario: ' + error.message);
+                    this.mostrarMensaje('Error al cargar usuario: ' + error.message, 'error');
                 }
             }
             
-            async cambiarEstadoUsuario(id, nuevoEstado) {
+            cambiarEstadoUsuario(id, nuevoEstado) {
                 try {
-                    const usuario = usuarioService.obtenerUsuarioPorId(id);
+                    const usuario = this.usuarioService.obtenerUsuarioPorId(id);
                     
                     if (!usuario) {
-                        util.mostrarError('Usuario no encontrado');
+                        this.mostrarMensaje('Usuario no encontrado', 'error');
+                        return;
+                    }
+                    
+                    if (usuario.id === this.auth.obtenerUsuarioActual().id) {
+                        this.mostrarMensaje('No puedes cambiar tu propio estado', 'error');
                         return;
                     }
                     
@@ -1578,24 +1316,21 @@
                         return;
                     }
                     
-                    await usuarioService.cambiarEstadoUsuario(id, nuevoEstado);
+                    this.usuarioService.cambiarEstadoUsuario(id, nuevoEstado);
+                    this.cargarUsuarios();
                     
-                    await this.cargarUsuarios();
-                    
-                    util.mostrarExito(`Usuario ${accion}do exitosamente`);
+                    this.mostrarMensaje(`Usuario ${accion}do exitosamente`, 'success');
                     
                 } catch (error) {
-                    util.mostrarError('Error al cambiar estado: ' + error.message);
+                    this.mostrarMensaje('Error al cambiar estado: ' + error.message, 'error');
                 }
             }
             
-            async buscarUsuarios(termino) {
-                await this.cargarUsuarios(termino);
+            buscarUsuarios(termino) {
+                this.cargarUsuarios(termino);
             }
             
             estadoCargando(cargando, mensaje = null) {
-                if (!this.btnGuardar) return;
-                
                 if (cargando) {
                     this.btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + mensaje;
                     this.btnGuardar.disabled = true;
@@ -1603,6 +1338,57 @@
                     const texto = this.usuarioEditando ? 'Actualizar Usuario' : 'Guardar Usuario';
                     this.btnGuardar.innerHTML = `<i class="fas fa-save"></i> ${texto}`;
                     this.btnGuardar.disabled = false;
+                }
+            }
+            
+            mostrarMensaje(texto, tipo = 'info') {
+                const mensajeDiv = document.createElement('div');
+                mensajeDiv.className = `alert alert-${tipo}`;
+                mensajeDiv.innerHTML = `
+                    <i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> 
+                    ${texto}
+                `;
+                
+                mensajeDiv.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    background: ${tipo === 'success' ? '#d4edda' : '#f8d7da'};
+                    color: ${tipo === 'success' ? '#155724' : '#721c24'};
+                    border-left: 4px solid ${tipo === 'success' ? '#28a745' : '#dc3545'};
+                    z-index: 9999;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    animation: slideIn 0.3s ease-out;
+                    max-width: 400px;
+                `;
+                
+                document.body.appendChild(mensajeDiv);
+                
+                setTimeout(() => {
+                    mensajeDiv.style.animation = 'slideOut 0.3s ease-out forwards';
+                    setTimeout(() => {
+                        if (mensajeDiv.parentNode) {
+                            mensajeDiv.parentNode.removeChild(mensajeDiv);
+                        }
+                    }, 300);
+                }, 3000);
+                
+                if (!document.querySelector('#animation-styles')) {
+                    const style = document.createElement('style');
+                    style.id = 'animation-styles';
+                    style.textContent = `
+                        @keyframes slideIn {
+                            from { transform: translateX(100%); opacity: 0; }
+                            to { transform: translateX(0); opacity: 1; }
+                        }
+                        @keyframes slideOut {
+                            from { transform: translateX(0); opacity: 1; }
+                            to { transform: translateX(100%); opacity: 0; }
+                        }
+                    `;
+                    document.head.appendChild(style);
                 }
             }
             
@@ -1615,46 +1401,19 @@
                         this.successMessage.style.display = 'none';
                     }, 3000);
                 }
-                util.mostrarExito(mensaje);
+                this.mostrarMensaje(mensaje, 'success');
             }
         }
-        
-        let registroController;
-        document.addEventListener('DOMContentLoaded', () => {
-            registroController = new RegistroController();
-        });
-        
-        window.registroController = registroController;
 
         // ============================================
         // INICIALIZACIÓN
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
+            window.registroController = new RegistroController();
+            
             console.log('=== SISTEMA DE REGISTRO DE USUARIOS ===');
-            console.log('Usuarios cargados desde localStorage');
-            console.log('Para desarrollo: admin / Admin123');
+            console.log('Página de registro cargada correctamente');
             console.log('=======================================');
-            
-            // Verificar sesión
-            if (!auth.verificarSesion()) {
-                window.location.href = 'index.html';
-            }
-            
-            // Efecto de entrada
-            setTimeout(() => {
-                const form = document.getElementById('formRegistro');
-                const table = document.querySelector('.table-container');
-                
-                if (form) {
-                    form.style.opacity = '1';
-                    form.style.transform = 'translateY(0)';
-                }
-                
-                if (table) {
-                    table.style.opacity = '1';
-                    table.style.transform = 'translateY(0)';
-                }
-            }, 300);
         });
     </script>
 </body>

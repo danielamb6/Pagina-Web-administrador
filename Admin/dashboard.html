@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Sistema de Incidencias</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #1a2980;
+            --secondary-blue: #26d0ce;
+            --accent-color: #AB096A;
+            --light-accent: #f8d4e8;
+            --gray-dark: #2c3e50;
+            --gray-medium: #34495e;
+            --gray-light: #ecf0f1;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --white: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-light: #999999;
+        }
+        
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Arial', Helvetica, sans-serif; 
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--gray-light);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--gray-dark) 100%);
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .logo-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-header span {
+            color: var(--accent-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Contenedor principal */
+        .container {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--white);
+            border-right: 1px solid rgba(171, 9, 106, 0.1);
+            padding: 2rem 0;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item:hover {
+            background-color: var(--light-accent);
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-item.active {
+            background-color: var(--light-accent);
+            border-left-color: var(--accent-color);
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        /* Contenido principal */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        /* Tarjetas de estadísticas */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .stat-card.resueltas {
+            border-left-color: var(--success);
+        }
+
+        .stat-card.proceso {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card.pendientes {
+            border-left-color: var(--danger);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        /* Secciones */
+        .section {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light-accent);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        /* Tablas */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: var(--gray-light);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gray-dark);
+            border-bottom: 2px solid var(--light-accent);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background-color: var(--light-accent);
+        }
+
+        /* Estados */
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge.pendiente {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .badge.proceso {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .badge.resuelta {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        /* Botones */
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #8A0755 100%);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(171, 9, 106, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--gray-medium);
+            color: var(--white);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--white);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+            padding: 2rem;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        /* Formularios */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(171, 9, 106, 0.3);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(171, 9, 106, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(171, 9, 106, 0.1);
+                padding: 1rem 0;
+            }
+            
+            .nav-menu {
+                display: flex;
+                overflow-x: auto;
+            }
+            
+            .nav-item {
+                padding: 0.5rem 1rem;
+                white-space: nowrap;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-header">
+            <svg width="40" height="40" viewBox="0 0 50 50">
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#1a2980;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#AB096A;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <rect width="50" height="50" rx="8" fill="url(#grad1)"/>
+                <path d="M15 20 L25 15 L35 20 L30 30 L20 30 Z" fill="white" opacity="0.9"/>
+                <circle cx="25" cy="22" r="3" fill="white"/>
+                <path d="M20 35 L30 35 L28 40 L22 40 Z" fill="white" opacity="0.7"/>
+            </svg>
+            <h1>Sistema de <span>Incidencias</span></h1>
+        </div>
+        
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div>
+                <div id="userName">Administrador</div>
+                <div style="font-size: 0.85rem; opacity: 0.8;" id="userRole">Administrador</div>
+            </div>
+            <button class="btn btn-secondary" id="btnLogout">
+                <i class="fas fa-sign-out-alt"></i> Salir
+            </button>
+        </div>
+    </header>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </li>
+                <li class="nav-item" data-section="incidencias">
+                    <i class="fas fa-exclamation-circle"></i> Incidencias
+                </li>
+                <li class="nav-item" data-section="reportes">
+                    <i class="fas fa-chart-bar"></i> Reportes
+                </li>
+                <li class="nav-item" data-section="nueva">
+                    <i class="fas fa-plus-circle"></i> Nueva Incidencia
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Sección Dashboard (por defecto) -->
+            <section id="dashboardSection" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Resumen del Sistema</h2>
+                    <button class="btn btn-primary" id="btnGenerarReporte">
+                        <i class="fas fa-file-pdf"></i> Generar Reporte PDF
+                    </button>
+                </div>
+                
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <h3>Total Incidencias</h3>
+                        <div class="stat-number" id="totalIncidencias">0</div>
+                        <p>Registradas en el sistema</p>
+                    </div>
+                    <div class="stat-card resueltas">
+                        <h3>Resueltas</h3>
+                        <div class="stat-number" id="incidenciasResueltas">0</div>
+                        <p>Incidencias solucionadas</p>
+                    </div>
+                    <div class="stat-card proceso">
+                        <h3>En Proceso</h3>
+                        <div class="stat-number" id="incidenciasProceso">0</div>
+                        <p>En atención actualmente</p>
+                    </div>
+                    <div class="stat-card pendientes">
+                        <h3>Pendientes</h3>
+                        <div class="stat-number" id="incidenciasPendientes">0</div>
+                        <p>Esperando atención</p>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title" style="margin-bottom: 1rem;">Incidencias Recientes</h3>
+                    <div class="table-container">
+                        <table id="tablaRecientes">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Descripción</th>
+                                    <th>Ubicación</th>
+                                    <th>Estado</th>
+                                    <th>Técnico</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Las incidencias se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección Incidencias -->
+            <section id="incidenciasSection" class="section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Gestión de Incidencias</h2>
+                    <div>
+                        <button class="btn btn-secondary" id="btnFiltrarPendientes">
+                            <i class="fas fa-clock"></i> Pendientes
+                        </button>
+                        <button class="btn btn-secondary" id="btnFiltrarProceso">
+                            <i class="fas fa-cogs"></i> En Proceso
+                        </button>
+                        <button class="btn btn-secondary" id="btnFiltrarResueltas">
+                            <i class="fas fa-check"></i> Resueltas
+                        </button>
+                        <button class="btn btn-primary" id="btnMostrarTodas">
+                            <i class="fas fa-list"></i> Todas
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="tablaIncidencias">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Título</th>
+                                <th>Descripción</th>
+                                <th>Ubicación Ocurrencia</th>
+                                <th>Ubicación Resolución</th>
+                                <th>Estado</th>
+                                <th>Técnico</th>
+                                <th>Observaciones</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Las incidencias se cargarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Sección Reportes -->
+            <section id="reportesSection" class="section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Reportes y Análisis</h2>
+                    <button class="btn btn-primary" id="btnDescargarReporte">
+                        <i class="fas fa-download"></i> Descargar Reporte PDF
+                    </button>
+                </div>
+                
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <h3>Promedio Resolución</h3>
+                        <div class="stat-number" id="promedioResolucion">0h</div>
+                        <p>Tiempo promedio de resolución</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Más Común</h3>
+                        <div class="stat-number" id="ubicacionComun">-</div>
+                        <p>Ubicación con más incidencias</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Técnico Activo</h3>
+                        <div class="stat-number" id="tecnicoActivo">-</div>
+                        <p>Más incidencias atendidas</p>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">Historial de Observaciones</h3>
+                    <div class="table-container">
+                        <table id="tablaObservaciones">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Incidencia</th>
+                                    <th>Ubicación Resolución</th>
+                                    <th>Observaciones Técnico</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Historial se cargará aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección Nueva Incidencia -->
+            <section id="nuevaSection" class="section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Registrar Nueva Incidencia</h2>
+                </div>
+                
+                <form id="formNuevaIncidencia">
+                    <div class="form-group">
+                        <label for="titulo">Título de la Incidencia *</label>
+                        <input type="text" id="titulo" class="form-control" required 
+                               placeholder="Ej: Error en servidor, Red lenta, etc.">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion">Descripción Detallada *</label>
+                        <textarea id="descripcion" class="form-control" required 
+                                  placeholder="Describe el problema en detalle..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ubicacionOcurrencia">Ubicación donde Ocurrió *</label>
+                        <input type="text" id="ubicacionOcurrencia" class="form-control" required 
+                               placeholder="Ej: Sala de servidores, Área de ventas, Oficina 302...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tecnicoAsignado">Técnico Asignado</label>
+                        <select id="tecnicoAsignado" class="form-control">
+                            <option value="">Seleccionar técnico...</option>
+                            <option value="Carlos Martínez">Carlos Martínez</option>
+                            <option value="Ana López">Ana López</option>
+                            <option value="Pedro Rodríguez">Pedro Rodríguez</option>
+                            <option value="María González">María González</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="prioridad">Prioridad</label>
+                        <select id="prioridad" class="form-control">
+                            <option value="baja">Baja</option>
+                            <option value="media">Media</option>
+                            <option value="alta">Alta</option>
+                            <option value="critica">Crítica</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" style="text-align: right;">
+                        <button type="button" class="btn btn-secondary" id="btnCancelar">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar Incidencia
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal para editar incidencia -->
+    <div id="modalEditar" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Incidencia</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <form id="formEditarIncidencia">
+                <input type="hidden" id="editId">
+                
+                <div class="form-group">
+                    <label for="editTitulo">Título</label>
+                    <input type="text" id="editTitulo" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDescripcion">Descripción</label>
+                    <textarea id="editDescripcion" class="form-control"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editUbicacionOcurrencia">Ubicación Ocurrencia</label>
+                    <input type="text" id="editUbicacionOcurrencia" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editUbicacionResolucion">Ubicación Resolución</label>
+                    <input type="text" id="editUbicacionResolucion" class="form-control" 
+                           placeholder="¿Dónde se resolvió?">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editObservacionesTecnico">Observaciones del Técnico</label>
+                    <textarea id="editObservacionesTecnico" class="form-control" 
+                              placeholder="Detalla las acciones realizadas para resolver la incidencia..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editEstado">Estado</label>
+                    <select id="editEstado" class="form-control">
+                        <option value="pendiente">Pendiente</option>
+                        <option value="en_proceso">En Proceso</option>
+                        <option value="resuelta">Resuelta</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editTecnicoAsignado">Técnico Asignado</label>
+                    <select id="editTecnicoAsignado" class="form-control">
+                        <option value="">Sin asignar</option>
+                        <option value="Carlos Martínez">Carlos Martínez</option>
+                        <option value="Ana López">Ana López</option>
+                        <option value="Pedro Rodríguez">Pedro Rodríguez</option>
+                        <option value="María González">María González</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" style="text-align: right;">
+                    <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // SISTEMA PRINCIPAL
+        // ============================================
+        class SistemaIncidencias {
+            constructor() {
+                this.auth = null;
+                this.incidenciasService = null;
+                this.incidencias = [];
+                this.init();
+            }
+            
+            init() {
+                // Verificar autenticación
+                this.verificarAutenticacion();
+                
+                // Inicializar servicios
+                this.incidenciasService = new IncidenciasService();
+                this.incidencias = this.incidenciasService.obtenerTodas();
+                
+                // Configurar interfaz
+                this.configurarUI();
+                this.cargarDatos();
+                this.configurarEventos();
+            }
+            
+            verificarAutenticacion() {
+                const sesion = localStorage.getItem('sesion_activa') || sessionStorage.getItem('sesion_activa');
+                if (!sesion) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+                try {
+                    const sesionData = JSON.parse(sesion);
+                    document.getElementById('userName').textContent = sesionData.nombre;
+                    document.getElementById('userRole').textContent = sesionData.rol;
+                    document.getElementById('userAvatar').textContent = 
+                        sesionData.nombre.charAt(0).toUpperCase();
+                } catch (e) {
+                    console.error('Error al cargar sesión:', e);
+                    window.location.href = 'index.html';
+                }
+            }
+            
+            configurarUI() {
+                // Navegación entre secciones
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const section = item.getAttribute('data-section');
+                        this.mostrarSeccion(section);
+                        
+                        // Actualizar navegación activa
+                        document.querySelectorAll('.nav-item').forEach(i => {
+                            i.classList.remove('active');
+                        });
+                        item.classList.add('active');
+                    });
+                });
+                
+                // Modal
+                const modal = document.getElementById('modalEditar');
+                const closeButtons = document.querySelectorAll('.close-modal');
+                
+                closeButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        modal.style.display = 'none';
+                    });
+                });
+                
+                window.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+            
+            mostrarSeccion(section) {
+                // Ocultar todas las secciones
+                document.querySelectorAll('.main-content > .section').forEach(sec => {
+                    sec.style.display = 'none';
+                });
+                
+                // Mostrar la sección solicitada
+                document.getElementById(`${section}Section`).style.display = 'block';
+                
+                // Actualizar datos según sección
+                switch(section) {
+                    case 'dashboard':
+                        this.actualizarDashboard();
+                        break;
+                    case 'incidencias':
+                        this.cargarTablaIncidencias();
+                        break;
+                    case 'reportes':
+                        this.cargarReportes();
+                        break;
+                }
+            }
+            
+            cargarDatos() {
+                this.actualizarDashboard();
+                this.cargarTablaIncidencias();
+            }
+            
+            actualizarDashboard() {
+                const total = this.incidencias.length;
+                const resueltas = this.incidencias.filter(i => i.estado === 'resuelta').length;
+                const enProceso = this.incidencias.filter(i => i.estado === 'en_proceso').length;
+                const pendientes = this.incidencias.filter(i => i.estado === 'pendiente').length;
+                
+                document.getElementById('totalIncidencias').textContent = total;
+                document.getElementById('incidenciasResueltas').textContent = resueltas;
+                document.getElementById('incidenciasProceso').textContent = enProceso;
+                document.getElementById('incidenciasPendientes').textContent = pendientes;
+                
+                // Cargar incidencias recientes
+                this.cargarIncidenciasRecientes();
+            }
+            
+            cargarIncidenciasRecientes() {
+                const tbody = document.querySelector('#tablaRecientes tbody');
+                tbody.innerHTML = '';
+                
+                const recientes = [...this.incidencias]
+                    .sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion))
+                    .slice(0, 5);
+                
+                recientes.forEach(inc => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${inc.id}</td>
+                        <td>${inc.descripcion?.substring(0, 50)}${inc.descripcion?.length > 50 ? '...' : ''}</td>
+                        <td>${inc.ubicacionOcurrencia || 'No especificada'}</td>
+                        <td><span class="badge ${inc.estado}">${inc.estado}</span></td>
+                        <td>${inc.tecnicoAsignado || 'Sin asignar'}</td>
+                    `;
+                });
+            }
+            
+            cargarTablaIncidencias() {
+                const tbody = document.querySelector('#tablaIncidencias tbody');
+                tbody.innerHTML = '';
+                
+                this.incidencias.forEach(inc => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${inc.id}</td>
+                        <td>${inc.titulo}</td>
+                        <td>${inc.descripcion?.substring(0, 80)}${inc.descripcion?.length > 80 ? '...' : ''}</td>
+                        <td>${inc.ubicacionOcurrencia || 'No especificada'}</td>
+                        <td>${inc.ubicacionResolucion || 'No resuelta aún'}</td>
+                        <td><span class="badge ${inc.estado}">${inc.estado}</span></td>
+                        <td>${inc.tecnicoAsignado || 'Sin asignar'}</td>
+                        <td>${inc.observacionesTecnico?.substring(0, 60) || 'Sin observaciones'}${inc.observacionesTecnico?.length > 60 ? '...' : ''}</td>
+                        <td>
+                            <button class="btn btn-secondary btn-sm" onclick="sistema.editarIncidencia(${inc.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    `;
+                });
+            }
+            
+            cargarReportes() {
+                // Calcular estadísticas
+                const incidenciasResueltas = this.incidencias.filter(i => i.estado === 'resuelta');
+                
+                // Ubicación más común
+                const ubicaciones = {};
+                this.incidencias.forEach(inc => {
+                    if (inc.ubicacionOcurrencia) {
+                        ubicaciones[inc.ubicacionOcurrencia] = (ubicaciones[inc.ubicacionOcurrencia] || 0) + 1;
+                    }
+                });
+                
+                const ubicacionComun = Object.entries(ubicaciones).sort((a, b) => b[1] - a[1])[0];
+                document.getElementById('ubicacionComun').textContent = ubicacionComun ? ubicacionComun[0] : '-';
+                
+                // Técnico más activo
+                const tecnicos = {};
+                this.incidencias.forEach(inc => {
+                    if (inc.tecnicoAsignado) {
+                        tecnicos[inc.tecnicoAsignado] = (tecnicos[inc.tecnicoAsignado] || 0) + 1;
+                    }
+                });
+                
+                const tecnicoActivo = Object.entries(tecnicos).sort((a, b) => b[1] - a[1])[0];
+                document.getElementById('tecnicoActivo').textContent = tecnicoActivo ? tecnicoActivo[0] : '-';
+                
+                // Cargar historial de observaciones
+                this.cargarHistorialObservaciones();
+            }
+            
+            cargarHistorialObservaciones() {
+                const tbody = document.querySelector('#tablaObservaciones tbody');
+                tbody.innerHTML = '';
+                
+                let historialCompleto = [];
+                
+                this.incidencias.forEach(inc => {
+                    // Agregar observación principal
+                    if (inc.observacionesTecnico) {
+                        historialCompleto.push({
+                            fecha: inc.fechaCreacion,
+                            incidencia: `#${inc.id} - ${inc.titulo}`,
+                            ubicacionResolucion: inc.ubicacionResolucion || 'No especificada',
+                            observaciones: inc.observacionesTecnico,
+                            estado: inc.estado
+                        });
+                    }
+                    
+                    // Agregar historial adicional
+                    if (inc.historial && Array.isArray(inc.historial)) {
+                        inc.historial.forEach(h => {
+                            historialCompleto.push({
+                                fecha: h.fecha,
+                                incidencia: `#${inc.id} - ${inc.titulo}`,
+                                ubicacionResolucion: h.ubicacionResolucion || inc.ubicacionResolucion || 'No especificada',
+                                observaciones: h.observaciones,
+                                estado: inc.estado
+                            });
+                        });
+                    }
+                });
+                
+                // Ordenar por fecha
+                historialCompleto.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+                
+                historialCompleto.forEach(item => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${new Date(item.fecha).toLocaleDateString()}</td>
+                        <td>${item.incidencia}</td>
+                        <td>${item.ubicacionResolucion}</td>
+                        <td>${item.observaciones}</td>
+                        <td><span class="badge ${item.estado}">${item.estado}</span></td>
+                    `;
+                });
+            }
+            
+            editarIncidencia(id) {
+                const incidencia = this.incidencias.find(i => i.id === id);
+                if (!incidencia) return;
+                
+                // Llenar formulario
+                document.getElementById('editId').value = incidencia.id;
+                document.getElementById('editTitulo').value = incidencia.titulo || '';
+                document.getElementById('editDescripcion').value = incidencia.descripcion || '';
+                document.getElementById('editUbicacionOcurrencia').value = incidencia.ubicacionOcurrencia || '';
+                document.getElementById('editUbicacionResolucion').value = incidencia.ubicacionResolucion || '';
+                document.getElementById('editObservacionesTecnico').value = incidencia.observacionesTecnico || '';
+                document.getElementById('editEstado').value = incidencia.estado || 'pendiente';
+                document.getElementById('editTecnicoAsignado').value = incidencia.tecnicoAsignado || '';
+                
+                // Mostrar modal
+                document.getElementById('modalEditar').style.display = 'flex';
+            }
+            
+            configurarEventos() {
+                // Logout
+                document.getElementById('btnLogout').addEventListener('click', () => {
+                    localStorage.removeItem('sesion_activa');
+                    sessionStorage.removeItem('sesion_activa');
+                    window.location.href = 'index.html';
+                });
+                
+                // Generar reporte PDF
+                document.getElementById('btnGenerarReporte').addEventListener('click', () => {
+                    this.incidenciasService.generarReportePDF();
+                });
+                
+                document.getElementById('btnDescargarReporte').addEventListener('click', () => {
+                    this.incidenciasService.generarReportePDF();
+                });
+                
+                // Filtros de incidencias
+                document.getElementById('btnFiltrarPendientes').addEventListener('click', () => {
+                    this.filtrarIncidencias('pendiente');
+                });
+                
+                document.getElementById('btnFiltrarProceso').addEventListener('click', () => {
+                    this.filtrarIncidencias('en_proceso');
+                });
+                
+                document.getElementById('btnFiltrarResueltas').addEventListener('click', () => {
+                    this.filtrarIncidencias('resuelta');
+                });
+                
+                document.getElementById('btnMostrarTodas').addEventListener('click', () => {
+                    this.cargarTablaIncidencias();
+                });
+                
+                // Nueva incidencia
+                document.getElementById('formNuevaIncidencia').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.crearNuevaIncidencia();
+                });
+                
+                document.getElementById('btnCancelar').addEventListener('click', () => {
+                    document.getElementById('formNuevaIncidencia').reset();
+                    this.mostrarSeccion('dashboard');
+                });
+                
+                // Editar incidencia
+                document.getElementById('formEditarIncidencia').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.guardarEdicionIncidencia();
+                });
+            }
+            
+            filtrarIncidencias(estado) {
+                const incidenciasFiltradas = this.incidencias.filter(i => i.estado === estado);
+                const tbody = document.querySelector('#tablaIncidencias tbody');
+                tbody.innerHTML = '';
+                
+                incidenciasFiltradas.forEach(inc => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${inc.id}</td>
+                        <td>${inc.titulo}</td>
+                        <td>${inc.descripcion?.substring(0, 80)}${inc.descripcion?.length > 80 ? '...' : ''}</td>
+                        <td>${inc.ubicacionOcurrencia || 'No especificada'}</td>
+                        <td>${inc.ubicacionResolucion || 'No resuelta aún'}</td>
+                        <td><span class="badge ${inc.estado}">${inc.estado}</span></td>
+                        <td>${inc.tecnicoAsignado || 'Sin asignar'}</td>
+                        <td>${inc.observacionesTecnico?.substring(0, 60) || 'Sin observaciones'}${inc.observacionesTecnico?.length > 60 ? '...' : ''}</td>
+                        <td>
+                            <button class="btn btn-secondary btn-sm" onclick="sistema.editarIncidencia(${inc.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    `;
+                });
+            }
+            
+            crearNuevaIncidencia() {
+                const nuevaIncidencia = {
+                    titulo: document.getElementById('titulo').value,
+                    descripcion: document.getElementById('descripcion').value,
+                    ubicacionOcurrencia: document.getElementById('ubicacionOcurrencia').value,
+                    tecnicoAsignado: document.getElementById('tecnicoAsignado').value || null,
+                    prioridad: document.getElementById('prioridad').value,
+                    estado: 'pendiente'
+                };
+                
+                this.incidenciasService.crearIncidencia(nuevaIncidencia);
+                this.incidencias = this.incidenciasService.obtenerTodas();
+                
+                alert('Incidencia creada exitosamente!');
+                document.getElementById('formNuevaIncidencia').reset();
+                this.mostrarSeccion('dashboard');
+                this.actualizarDashboard();
+            }
+            
+            guardarEdicionIncidencia() {
+                const id = parseInt(document.getElementById('editId').value);
+                const datosActualizados = {
+                    titulo: document.getElementById('editTitulo').value,
+                    descripcion: document.getElementById('editDescripcion').value,
+                    ubicacionOcurrencia: document.getElementById('editUbicacionOcurrencia').value,
+                    ubicacionResolucion: document.getElementById('editUbicacionResolucion').value || null,
+                    observacionesTecnico: document.getElementById('editObservacionesTecnico').value || null,
+                    estado: document.getElementById('editEstado').value,
+                    tecnicoAsignado: document.getElementById('editTecnicoAsignado').value || null
+                };
+                
+                this.incidenciasService.actualizarIncidencia(id, datosActualizados);
+                this.incidencias = this.incidenciasService.obtenerTodas();
+                
+                // Cerrar modal
+                document.getElementById('modalEditar').style.display = 'none';
+                
+                // Actualizar vistas
+                this.cargarTablaIncidencias();
+                this.actualizarDashboard();
+                
+                alert('Incidencia actualizada exitosamente!');
+            }
+        }
+
+        // ============================================
+        // CLASES AUXILIARES (copiadas del index.html)
+        // ============================================
+        class StorageService {
+            constructor() {
+                this.incidenciasKey = 'incidencias_sistema';
+                this.usuariosKey = 'usuarios_sistema';
+            }
+            
+            guardarIncidencias(incidencias) {
+                localStorage.setItem(this.incidenciasKey, JSON.stringify(incidencias));
+            }
+            
+            obtenerIncidencias() {
+                const datos = localStorage.getItem(this.incidenciasKey);
+                return datos ? JSON.parse(datos) : [];
+            }
+            
+            guardarUsuarios(usuarios) {
+                localStorage.setItem(this.usuariosKey, JSON.stringify(usuarios));
+            }
+            
+            obtenerUsuarios() {
+                const datos = localStorage.getItem(this.usuariosKey);
+                return datos ? JSON.parse(datos) : null;
+            }
+        }
+
+        class IncidenciasService {
+            constructor() {
+                this.storage = new StorageService();
+            }
+            
+            crearIncidencia(datos) {
+                const incidencias = this.obtenerTodas();
+                const nuevaIncidencia = {
+                    id: Date.now(),
+                    ...datos,
+                    fechaCreacion: new Date().toISOString(),
+                    estado: 'pendiente',
+                    historial: []
+                };
+                
+                incidencias.push(nuevaIncidencia);
+                this.storage.guardarIncidencias(incidencias);
+                return nuevaIncidencia;
+            }
+            
+            obtenerTodas() {
+                return this.storage.obtenerIncidencias();
+            }
+            
+            actualizarIncidencia(id, datos) {
+                const incidencias = this.obtenerTodas();
+                const index = incidencias.findIndex(i => i.id === id);
+                
+                if (index !== -1) {
+                    if (datos.observacionesTecnico && datos.observacionesTecnico !== incidencias[index].observacionesTecnico) {
+                        if (!incidencias[index].historial) {
+                            incidencias[index].historial = [];
+                        }
+                        incidencias[index].historial.push({
+                            fecha: new Date().toISOString(),
+                            observaciones: datos.observacionesTecnico,
+                            ubicacionResolucion: datos.ubicacionResolucion || incidencias[index].ubicacionResolucion
+                        });
+                    }
+                    
+                    incidencias[index] = { ...incidencias[index], ...datos };
+                    this.storage.guardarIncidencias(incidencias);
+                    return true;
+                }
+                
+                return false;
+            }
+            
+            generarReportePDF() {
+                const incidencias = this.obtenerTodas();
+                
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Título
+                doc.setFontSize(20);
+                doc.text('Reporte de Incidencias', 105, 20, null, null, 'center');
+                
+                // Fecha de generación
+                doc.setFontSize(10);
+                doc.text(`Generado: ${new Date().toLocaleString()}`, 105, 30, null, null, 'center');
+                
+                // Tabla de incidencias
+                const headers = [['ID', 'Título', 'Ubicación', 'Estado', 'Técnico', 'Observaciones']];
+                const datos = incidencias.map(inc => [
+                    inc.id.toString(),
+                    inc.titulo || 'Sin título',
+                    `${inc.ubicacionOcurrencia || ''} → ${inc.ubicacionResolucion || ''}`,
+                    inc.estado || 'pendiente',
+                    inc.tecnicoAsignado || 'Sin asignar',
+                    inc.observacionesTecnico || 'Sin observaciones'
+                ]);
+                
+                doc.autoTable({
+                    head: headers,
+                    body: datos,
+                    startY: 40,
+                    theme: 'striped',
+                    headStyles: { fillColor: [26, 41, 128] },
+                    columnStyles: {
+                        0: { cellWidth: 15 },
+                        1: { cellWidth: 40 },
+                        2: { cellWidth: 40 },
+                        3: { cellWidth: 20 },
+                        4: { cellWidth: 30 },
+                        5: { cellWidth: 45 }
+                    }
+                });
+                
+                // Guardar PDF
+                doc.save(`reporte_incidencias_${new Date().toISOString().split('T')[0]}.pdf`);
+            }
+        }
+
+        // ============================================
+        // INICIALIZACIÓN
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            window.sistema = new SistemaIncidencias();
+        });
+    </script>
+</body>
+</html>
