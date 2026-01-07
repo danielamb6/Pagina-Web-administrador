@@ -5,7 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - Reportes de Incidencias</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsPDF para generación de reportes PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
+            /* PALETA DE COLORES ARMÓNICA */
+            --primary-blue: #1a2980;        /* Azul principal más oscuro */
+            --secondary-blue: #26d0ce;      /* Turquesa para acentos */
+            --wine: #7b112f;                /* Vino para botones */
+            --dark-wine: #5a0c22;           /* Vino oscuro para hover */
+            --accent-color: #AB096A;        /* ROSA/VINO para destacar */
+            --light-accent: #f8d4e8;        /* Rosa claro para fondos */
+            --gray-dark: #2c3e50;           /* Gris oscuro para sidebar */
+            --gray-medium: #34495e;         /* Gris medio */
+            --gray-light: #ecf0f1;          /* Gris claro para fondo */
+            --success: #27ae60;             /* Verde éxito */
+            --warning: #f39c12;             /* Naranja advertencia */
+            --danger: #e74c3c;              /* Rojo peligro */
+            --white: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-light: #999999;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -14,44 +38,75 @@
         }
         
         body {
-            background: #E3E3E3;
-           
-            color: white !important;
+            background: linear-gradient(135deg, var(--gray-light) 0%, #ffffff 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
         }
         
-        /* BARRA SUPERIOR MARRÓN (#450016) */
+        /* BARRA SUPERIOR CON LOGO MEJORADO */
         .top-bar {
-            background-color: #122db3 !important; /* Color marrón específico */
-            background: radial-gradient(circle, rgba(18, 45, 179, 1) 0%, rgba(19, 25, 56, 1) 100%);
-            color: white !important;
-            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: var(--white);
+            padding: 10px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 20px rgba(26, 41, 128, 0.3);
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 3px solid var(--accent-color);
+            min-height: 70px;
         }
         
-        /* Logo en la barra superior */
-        .top-bar-logo {
+        /* Logo container mejorado */
+        .logo-container {
             display: flex;
             align-items: center;
             gap: 15px;
         }
         
-        .top-bar-logo h1 {
-            color: white !important;
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+        /* Logo image styling */
+        .logo-img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            transition: transform 0.3s ease;
         }
         
-        top-bar-logo span {
-            color: #ffcc00 !important; /* Color dorado para contraste */
-        }.
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Logo text styling */
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .logo-text h1 {
+            color: var(--white);
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            line-height: 1.2;
+            margin: 0;
+        }
+        
+        .logo-text span {
+            color: var(--accent-color);
+            font-weight: 800;
+        }
+        
+        .logo-text .subtitle {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-top: 2px;
+            font-weight: 500;
+        }
         
         /* Información del usuario en barra superior */
         .top-user-info {
@@ -61,18 +116,18 @@
         }
         
         .top-user-avatar {
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #7b112f, #5a0c22);
-
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #E3E3E3 !important;
+            color: var(--white);
             font-weight: bold;
-            font-size: 1.2rem;
-            border: 2px solid rgba(87, 81, 81, 0.3);
+            font-size: 1rem;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         
         .user-details {
@@ -81,55 +136,76 @@
         
         .user-details .user-name {
             font-weight: 700;
-            font-size: 1.1rem;
-            color: white !important;
+            font-size: 0.95rem;
+            color: var(--white);
         }
         
         .user-details .user-role {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8) !important;
-        }
-        
-        /* Esto cambia TODOS los textos a blanco (excepto lo especificado) */
-        body, body *:not(.status-badge):not(.empresa-badge) {
-            color: black !important;
-        }
-        
-        /* Excepciones para badges (mantienen sus colores) */
-        .status-badge, .empresa-badge {
-            color: inherit !important;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.9);
         }
         
         .container {
             display: flex;
-            min-height: calc(100vh - 75px); /* Resta la altura de la barra superior */
+            min-height: calc(100vh - 70px);
         }
         
-        /* Sidebar */
+        /* Sidebar con gradiente y acento rosa */
         .sidebar {
             width: 250px;
-            background: linear-gradient(to bottom, #9C9C9C, #7f7f7f);
-            color: white;
+            background: linear-gradient(to bottom, var(--gray-dark), var(--gray-medium));
+            color: var(--white);
             padding: 20px 0;
-            box-shadow: 3px 0 10px rgba(0,0,0,0.2);
-            backdrop-filter: blur(10px);
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
         }
         
-        .logo {
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--accent-color);
+        }
+        
+        .logo-sidebar {
             text-align: center;
             padding: 20px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
             margin-bottom: 30px;
+            position: relative;
         }
         
-        .logo h2 {
-            font-size: 1.5rem;
+        .logo-sidebar::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+        
+        .logo-sidebar h2 {
+            font-size: 1.3rem;
             font-weight: 600;
-            color: white !important;
+            color: var(--white);
+            margin-bottom: 5px;
         }
         
-        .logo span {
-            color: #ffcc00 !important; /* Dorado para contraste */
+        .logo-sidebar span {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+        
+        .logo-sidebar p {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
         }
         
         .menu {
@@ -138,62 +214,116 @@
         }
         
         .menu-item {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         
         .menu-link {
             display: flex;
             align-items: center;
             padding: 12px 15px;
-            color: rgba(255,255,255,0.8) !important;
+            color: rgba(255, 255, 255, 0.85);
             text-decoration: none;
             border-radius: 8px;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .menu-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(to right, rgba(171, 9, 106, 0.2), rgba(171, 9, 106, 0.1));
+            transition: width 0.3s ease;
         }
         
         .menu-link:hover, .menu-link.active {
-            background-color: rgba(255, 204, 0, 0.2); /* Dorado translúcido */
-            color: white !important;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            transform: translateX(5px);
+        }
+        
+        .menu-link:hover::before, .menu-link.active::before {
+            width: 100%;
         }
         
         .menu-link i {
-            margin-right: 10px;
-            font-size: 1.2rem;
-            color: white !important;
+            margin-right: 12px;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            min-width: 24px;
+            text-align: center;
+        }
+        
+        .menu-link.active i {
+            color: var(--accent-color);
         }
         
         /* Main Content */
         .main-content {
             flex: 1;
-            padding: 20px;
+            padding: 25px;
             overflow-y: auto;
-            color: white !important;
+            background: var(--white);
         }
         
-        /* Título de la página dentro del contenido */
+        /* Título de la página */
         .page-title {
-            color: white !important;
+            color: var(--primary-blue);
             font-size: 1.8rem;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid var(--accent-color);
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .page-title::before {
+            content: '';
+            width: 8px;
+            height: 30px;
+            background: var(--accent-color);
+            border-radius: 4px;
         }
         
         /* Filter Section */
         .filters {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(26, 41, 128, 0.05) 0%, rgba(38, 208, 206, 0.05) 100%);
+            border-radius: 12px;
             padding: 25px;
             margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(171, 9, 106, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .filters::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary-blue), var(--accent-color));
         }
         
         .filters h2 {
-            color: white !important;
+            color: var(--primary-blue);
             margin-bottom: 20px;
             font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filters h2 i {
+            color: var(--accent-color);
         }
         
         .filter-grid {
@@ -210,44 +340,55 @@
         .filter-group label {
             margin-bottom: 8px;
             font-weight: 600;
-            color: rgba(255,255,255,0.9) !important;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-group label i {
+            color: var(--accent-color);
+            font-size: 0.9rem;
         }
         
         .filter-control {
-            padding: 12px;
-            border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px 15px;
+            border: 1px solid rgba(171, 9, 106, 0.3);
             border-radius: 6px;
             font-size: 1rem;
-            background-color: rgba(255,255,255,0.1);
-            color: white !important;
+            background-color: var(--white);
+            color: var(--text-primary);
             transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
         
         .filter-control:focus {
             outline: none;
-            border-color: #ffcc00; /* Dorado para el focus */
-            box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.2);
-            background-color: rgba(255,255,255,0.15);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(171, 9, 106, 0.2);
+            transform: translateY(-2px);
         }
         
         .filter-control::placeholder {
-            color: rgba(255,255,255,0.6) !important;
+            color: var(--text-light);
         }
         
         /* Estilo específico para selects */
         select.filter-control {
             appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23AB096A'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: right 10px center;
             background-size: 20px;
             padding-right: 40px;
+            cursor: pointer;
         }
         
         /* Estilo para options */
         .filter-control option {
-            background-color: #450016;
-            color: white !important;
+            background-color: var(--white);
+            color: var(--text-primary);
+            padding: 10px;
         }
         
         .date-range {
@@ -260,12 +401,14 @@
             justify-content: flex-end;
             gap: 15px;
             margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(171, 9, 106, 0.2);
         }
         
         .btn {
             padding: 12px 25px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             font-size: 1rem;
@@ -273,26 +416,41 @@
             align-items: center;
             gap: 8px;
             transition: all 0.3s ease;
-            color: white !important;
+            color: var(--white);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
         }
         
         .btn-primary {
-         background-color: #7b112f; /* Vino */
-        color: #ffffff;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #8A0755 100%);
         }
-
+        
         .btn-primary:hover {
-        background-color: #5a0c22; /* Vino oscuro */
+            background: linear-gradient(135deg, #8A0755 0%, #690542 100%);
         }
-
         
         .btn-secondary {
-            background-color: rgba(255,255,255,0.2);
-            color: white !important;
+            background: linear-gradient(135deg, var(--gray-medium) 0%, var(--gray-dark) 100%);
         }
         
         .btn-secondary:hover {
-            background-color: rgba(255,255,255,0.3);
+            background: linear-gradient(135deg, var(--gray-dark) 0%, #2c3e50 100%);
+        }
+        
+        .btn-pdf {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .btn-pdf:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
         }
         
         /* Data Summary */
@@ -304,111 +462,196 @@
         }
         
         .summary-card {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
+            border-radius: 12px;
+            padding: 25px 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: transform 0.3s ease;
+            border: 1px solid rgba(171, 9, 106, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-blue), var(--accent-color));
         }
         
         .summary-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
         
         .summary-card i {
             font-size: 2.5rem;
             margin-bottom: 15px;
-            color: #ffcc00 !important; /* Dorado */
+            color: var(--accent-color);
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .summary-card h3 {
-            font-size: 2rem;
-            color: white !important;
+            font-size: 2.2rem;
+            color: var(--primary-blue);
             margin-bottom: 5px;
+            font-weight: 700;
         }
         
         .summary-card p {
-            color: rgba(255,255,255,0.8) !important;
+            color: var(--text-secondary);
             font-size: 0.9rem;
+            font-weight: 500;
         }
         
         /* Table Preview */
         .table-preview {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            background: var(--white);
+            border-radius: 12px;
             padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(171, 9, 106, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .table-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-blue), var(--accent-color));
         }
         
         .table-preview h2 {
-            color: white !important;
+            color: var(--primary-blue);
             margin-bottom: 20px;
             font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .table-preview h2 i {
+            color: var(--accent-color);
         }
         
         table {
             width: 100%;
-            border-collapse: collapse;
-            color: white !important;
+            border-collapse: separate;
+            border-spacing: 0;
+            color: var(--text-primary);
         }
         
         table thead {
-            background-color: rgba(69, 0, 22, 0.4); /* Tono marrón translúcido */
+            background: linear-gradient(135deg, rgba(26, 41, 128, 0.1) 0%, rgba(171, 9, 106, 0.1) 100%);
         }
         
         table th {
             padding: 15px;
             text-align: left;
-            color: white !important;
+            color: var(--primary-blue);
             font-weight: 600;
-            border-bottom: 2px solid rgba(255,255,255,0.2);
+            border-bottom: 2px solid var(--accent-color);
+            position: relative;
+        }
+        
+        table th:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            height: 60%;
+            width: 1px;
+            background: rgba(171, 9, 106, 0.3);
         }
         
         table td {
             padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            color: white !important;
+            border-bottom: 1px solid rgba(171, 9, 106, 0.1);
+            color: var(--text-primary);
+            transition: background-color 0.2s ease;
         }
         
         table tbody tr:hover {
-            background-color: rgba(69, 0, 22, 0.2); /* Tono marrón muy translúcido */
+            background-color: rgba(171, 9, 106, 0.05);
         }
         
+        /* ESTADOS DE TICKET */
         .status-badge {
             display: inline-block;
-            padding: 5px 12px;
+            padding: 6px 15px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
-            color: inherit !important;
+            color: var(--white);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .status-resuelto {
-            background-color: rgba(212, 237, 218, 0.9);
-            color: #155724 !important;
+            background: linear-gradient(135deg, var(--success) 0%, #2ecc71 100%);
         }
         
         .status-pendiente {
-            background-color: rgba(255, 243, 205, 0.9);
-            color: #856404 !important;
+            background: linear-gradient(135deg, var(--warning) 0%, #f1c40f 100%);
+        }
+        
+        .status-abierto {
+            background: linear-gradient(135deg, var(--danger) 0%, #c0392b 100%);
+        }
+        
+        .status-espera {
+            background: linear-gradient(135deg, var(--warning) 0%, #f1c40f 100%);
+        }
+        
+        .status-cerrado {
+            background: linear-gradient(135deg, var(--success) 0%, #2ecc71 100%);
         }
         
         .empresa-badge {
             display: inline-block;
-            padding: 5px 12px;
+            padding: 6px 15px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
-            background-color: rgba(227, 242, 253, 0.9);
-            color: #1565c0 !important;
+            background: linear-gradient(135deg, rgba(171, 9, 106, 0.1) 0%, rgba(26, 41, 128, 0.1) 100%);
+            color: var(--primary-blue);
+            border: 1px solid rgba(171, 9, 106, 0.3);
+        }
+        
+        /* Selector de estado */
+        .status-select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(171, 9, 106, 0.3);
+            background-color: var(--white);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+        
+        .status-select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(171, 9, 106, 0.2);
+        }
+        
+        .status-select option {
+            padding: 8px;
         }
         
         /* Responsive */
@@ -423,15 +666,26 @@
                 padding: 10px 0;
             }
             
+            .sidebar::before {
+                width: 100%;
+                height: 5px;
+                top: 0;
+                left: 0;
+            }
+            
             .menu {
                 display: flex;
                 overflow-x: auto;
                 padding: 10px;
+                gap: 10px;
             }
             
             .menu-item {
                 margin-bottom: 0;
-                margin-right: 10px;
+            }
+            
+            .menu-link {
+                white-space: nowrap;
             }
             
             .menu-link span {
@@ -443,11 +697,23 @@
                 gap: 15px;
                 padding: 15px 20px;
                 text-align: center;
+                min-height: auto;
+            }
+            
+            .logo-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .logo-img {
+                height: 35px;
             }
             
             .top-user-info {
                 flex-direction: column;
                 gap: 10px;
+                text-align: center;
             }
             
             .user-details {
@@ -477,67 +743,314 @@
                 display: block;
                 overflow-x: auto;
             }
+            
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+            
+            .logo-text .subtitle {
+                font-size: 0.7rem;
+            }
         }
         
-        /* Scrollbar personalizado en tono marrón */
+        @media (max-width: 480px) {
+            .top-bar {
+                padding: 10px 15px;
+            }
+            
+            .logo-img {
+                height: 30px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1rem;
+            }
+            
+            .data-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Scrollbar personalizado con acento rosa */
         ::-webkit-scrollbar {
             width: 8px;
+            height: 8px;
         }
         
         ::-webkit-scrollbar-track {
-            background: rgba(69, 0, 22, 0.3);
+            background: rgba(171, 9, 106, 0.1);
             border-radius: 10px;
         }
         
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 204, 0, 0.5);
+            background: linear-gradient(to bottom, var(--primary-blue), var(--accent-color));
             border-radius: 10px;
         }
         
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 204, 0, 0.7);
+            background: linear-gradient(to bottom, var(--accent-color), var(--primary-blue));
         }
         
-        /* Efecto de sombra para la barra superior */
-        .top-bar::after {
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .summary-card, .filters, .table-preview {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .summary-card:nth-child(2) { animation-delay: 0.1s; }
+        .summary-card:nth-child(3) { animation-delay: 0.2s; }
+        .summary-card:nth-child(4) { animation-delay: 0.3s; }
+        
+        /* Efectos de brillo en hover para tarjetas */
+        .summary-card:hover::after {
             content: '';
             position: absolute;
-            bottom: -5px;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(171, 9, 106, 0.2), transparent);
+            animation: shine 1.5s ease-in-out;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* Tooltips con acento rosa */
+        [data-tooltip] {
+            position: relative;
+        }
+        
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-color);
+            color: var(--white);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            visibility: visible;
+            bottom: 120%;
+        }
+        
+        /* Badge de notificaciones con rosa */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(135deg, var(--accent-color), #8A0755);
+            color: var(--white);
+            font-size: 0.7rem;
+            font-weight: bold;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--white);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Estilo para el estado de carga con rosa */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
             left: 0;
             width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, #ffcc00, #ff9900);
-            opacity: 0.5;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(171, 9, 106, 0.3), transparent);
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Placeholder para logo si no se carga */
+        .logo-placeholder {
+            height: 40px;
+            width: 40px;
+            background: linear-gradient(135deg, var(--white), var(--accent-color));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        /* Modal para vista previa de PDF */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--accent-color);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+        
+        .modal-title {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            transform: rotate(90deg);
+        }
+        
+        /* Contenedor de gráficas */
+        .chart-container {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background: rgba(171, 9, 106, 0.05);
+            border: 1px solid rgba(171, 9, 106, 0.1);
+        }
+        
+        .chart-title {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .chart-title i {
+            color: var(--accent-color);
+        }
+        
+        /* Métricas en el modal */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, rgba(26, 41, 128, 0.1) 0%, rgba(171, 9, 106, 0.1) 100%);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
     </style>
 </head>
 <body>
-    <!-- BARRA SUPERIOR MARRÓN -->
+    <!-- BARRA SUPERIOR CON LOGO ORGANIZADO -->
     <div class="top-bar">
-        <div class="top-bar-logo">
-            <h1>Admin<span>Incidencias</span></h1>
+        <div class="logo-container">
+            <!-- Logo con placeholder en caso de que la imagen no se cargue -->
+            <div class="logo-placeholder" id="logo-placeholder">
+                <i class="fas fa-tools"></i>
+            </div>
+            <img src="logo sin fondo.png" alt="Logo del Sistema" class="logo-img" onerror="document.getElementById('logo-placeholder').style.display='flex'; this.style.display='none'">           
+            <div class="logo-text">
+                <h1>Sistema de <span>Incidencias</span></h1>
+                <div class="subtitle">Panel de Administración</div>
+            </div>
         </div>
         
         <div class="top-user-info">
             <div class="user-details">
-                <div class="user-name">Reportes de Incidencias</div>
-                <div class="user-role">Panel de Administración</div>
+                <div class="user-name">Administrador</div>
+                <div class="user-role">Reportes de Incidencias</div>
             </div>
-            <div class="top-user-avatar">AD</div>
+            <div class="top-user-avatar" data-tooltip="Administrador">AD</div>
         </div>
     </div>
 
     <div class="container">
-        <!-- Sidebar -->
+        <!-- Sidebar con acento rosa -->
         <aside class="sidebar">
-            <div class="logo">
+            <div class="logo-sidebar">
                 <h2>Admin<span>Incidencias</span></h2>
+                <p>Sistema de Gestión</p>
             </div>
             <ul class="menu">
                 <li class="menu-item">
                     <a href="#" class="menu-link active">
                         <i class="fas fa-chart-line"></i>
                         <span>Dashboard</span>
+                        <span class="notification-badge">3</span>
                     </a>
                 </li>
                 <li class="menu-item">
@@ -575,15 +1088,18 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Título de la página (si aún lo quieres dentro) -->
-            <h1 class="page-title">Reportes de Incidencias</h1>
+            <!-- Título de la página con acento rosa -->
+            <h1 class="page-title">
+                <i class="fas fa-chart-bar"></i>
+                Reportes de Incidencias
+            </h1>
 
-            <!-- Filtros -->
+            <!-- Filtros con acento rosa -->
             <section class="filters">
-                <h2>Filtrar Reporte</h2>
+                <h2><i class="fas fa-filter"></i> Filtrar Reporte</h2>
                 <div class="filter-grid">
                     <div class="filter-group">
-                        <label for="empresa">Empresa</label>
+                        <label for="empresa"><i class="fas fa-building"></i> Empresa</label>
                         <select id="empresa" class="filter-control">
                             <option value="">Todas las empresas</option>
                             <option value="zoxo">Zoxo</option>
@@ -595,9 +1111,9 @@
                     </div>
                     
                     <div class="filter-group">
-                        <label for="tecnico">Técnico</label>
+                        <label for="tecnico"><i class="fas fa-user-cog"></i> Técnico</label>
                         <select id="tecnico" class="filter-control">
-                            <option value="">Todos los técnicos</option>
+                            <option value="">Todos los técnicos</option>                                
                             <option value="juan_perez">Juan Pérez</option>
                             <option value="maria_gomez">María Gómez</option>
                             <option value="carlos_rodriguez">Carlos Rodríguez</option>
@@ -606,7 +1122,7 @@
                     </div>
                     
                     <div class="filter-group">
-                        <label for="tipo-falla">Tipo de Falla</label>
+                        <label for="tipo-falla"><i class="fas fa-tools"></i> Tipo de Falla</label>
                         <select id="tipo-falla" class="filter-control">
                             <option value="">Todos los tipos</option>
                             <option value="equipos">Equipos</option>
@@ -618,32 +1134,44 @@
                     </div>
                     
                     <div class="filter-group">
-                        <label for="fecha-inicio">Rango de Fechas</label>
+                        <label for="estado"><i class="fas fa-clipboard-check"></i> Estado</label>
+                        <select id="estado" class="filter-control">
+                            <option value="">Todos los estados</option>
+                            <option value="abierto">Abierto</option>
+                            <option value="espera">En Espera</option>
+                            <option value="cerrado">Cerrado</option>
+                            <option value="resuelto">Resuelto</option>
+                            <option value="pendiente">Pendiente</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="fecha-inicio"><i class="fas fa-calendar-alt"></i> Rango de Fechas</label>
                         <div class="date-range">
-                            <input type="date" id="fecha-inicio" class="filter-control" style="flex: 1;">
-                            <input type="date" id="fecha-fin" class="filter-control" style="flex: 1;">
+                            <input type="date" id="fecha-inicio" class="filter-control" style="flex: 1;" data-tooltip="Fecha inicial">
+                            <input type="date" id="fecha-fin" class="filter-control" style="flex: 1;" data-tooltip="Fecha final">
                         </div>
                     </div>
                 </div>
                 
                 <div class="actions">
-                    <button class="btn btn-secondary" id="limpiar-filtros">
+                    <button class="btn btn-secondary" id="limpiar-filtros" data-tooltip="Restablecer filtros">
                         <i class="fas fa-eraser"></i> Limpiar Filtros
                     </button>
-                    <button class="btn btn-primary" id="generar-reporte">
-                        <i class="fas fa-file-export"></i> Generar Reporte
+                    <button class="btn btn-primary" id="generar-reporte" data-tooltip="Actualizar vista con filtros">
+                        <i class="fas fa-sync-alt"></i> Actualizar Vista
                     </button>
-                    <button class="btn btn-primary" id="descargar-reporte">
-                        <i class="fas fa-download"></i> Descargar Reporte
+                    <button class="btn btn-pdf" id="generar-pdf" data-tooltip="Generar reporte en PDF">
+                        <i class="fas fa-file-pdf"></i> Generar Reporte PDF
                     </button>
                 </div>
             </section>
 
-            <!-- Resumen de Datos -->
+            <!-- Resumen de Datos con acento rosa -->
             <section class="data-summary">
                 <div class="summary-card">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <h3>48</h3>
+                    <h3 id="total-incidencias">48</h3>
                     <p>Incidencias Totales</p>
                 </div>
                 <div class="summary-card">
@@ -661,11 +1189,26 @@
                     <h3>3.2h</h3>
                     <p>Tiempo Promedio</p>
                 </div>
+                <div class="summary-card">
+                    <i class="fas fa-folder-open"></i>
+                    <h3 id="abiertas-count">15</h3>
+                    <p>Incidencias Abiertas</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-hourglass-half"></i>
+                    <h3 id="espera-count">8</h3>
+                    <p>En Espera de Refacción</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3 id="cerradas-count">25</h3>
+                    <p>Incidencias Cerradas</p>
+                </div>
             </section>
 
-            <!-- Vista Previa de Datos -->
+            <!-- Vista Previa de Datos con acento rosa -->
             <section class="table-preview">
-                <h2>Vista Previa del Reporte</h2>
+                <h2><i class="fas fa-table"></i> Vista Previa del Reporte</h2>
                 <table>
                     <thead>
                         <tr>
@@ -675,126 +1218,1003 @@
                             <th>Tiempo</th>
                             <th>Tipo de Falla</th>
                             <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Juan Pérez</td>
-                            <td>15/10/2023</td>
-                            <td><span class="empresa-badge">Zoxo</span></td>
-                            <td>2.5h</td>
-                            <td>EQUIPOS - MDVR</td>
-                            <td><span class="status-badge status-resuelto">Resuelto</span></td>
-                        </tr>
-                        <tr>
-                            <td>María Gómez</td>
-                            <td>14/10/2023</td>
-                            <td><span class="empresa-badge">Codiversa</span></td>
-                            <td>4.0h</td>
-                            <td>ELEMENTOS - Cámara Operador</td>
-                            <td><span class="status-badge status-resuelto">Resuelto</span></td>
-                        </tr>
-                        <tr>
-                            <td>Carlos Rodríguez</td>
-                            <td>13/10/2023</td>
-                            <td><span class="empresa-badge">Copesa</span></td>
-                            <td>1.5h</td>
-                            <td>ACCESORIOS - Antena GPS</td>
-                            <td><span class="status-badge status-pendiente">Pendiente</span></td>
-                        </tr>
-                        <tr>
-                            <td>Ana López</td>
-                            <td>12/10/2023</td>
-                            <td><span class="empresa-badge">Sitraq</span></td>
-                            <td>3.0h</td>
-                            <td>FALLA REPORTADA - No accesa</td>
-                            <td><span class="status-badge status-resuelto">Resuelto</span></td>
-                        </tr>
-                        <tr>
-                            <td>Juan Pérez</td>
-                            <td>11/10/2023</td>
-                            <td><span class="empresa-badge">Corevsa</span></td>
-                            <td>2.0h</td>
-                            <td>SOLUCIÓN - Se restablece conexión</td>
-                            <td><span class="status-badge status-resuelto">Resuelto</span></td>
-                        </tr>
+                    <tbody id="tickets-body">
+                        <!-- Los tickets se cargarán dinámicamente aquí -->
                     </tbody>
                 </table>
             </section>
         </main>
     </div>
 
+    <!-- Modal para vista previa de PDF -->
+    <div class="modal" id="pdf-preview-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-file-pdf"></i> Vista Previa del Reporte PDF</h2>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            <div id="pdf-content">
+                <!-- Contenido del PDF se genera aquí -->
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Inicializar fechas por defecto (últimos 30 días)
-        const hoy = new Date();
-        const hace30Dias = new Date();
-        hace30Dias.setDate(hoy.getDate() - 30);
+        // Variables globales
+        let ticketsData = [];
+        let chartInstances = [];
         
-        document.getElementById('fecha-inicio').value = hace30Dias.toISOString().split('T')[0];
-        document.getElementById('fecha-fin').value = hoy.toISOString().split('T')[0];
+        // Datos de ejemplo para demostración
+        const empresas = ['Zoxo', 'Codiversa', 'Copesa', 'Sitraq', 'Corevsa'];
+        const tecnicos = ['Juan Pérez', 'María Gómez', 'Carlos Rodríguez', 'Ana López'];
+        const tiposFalla = [
+            'EQUIPOS - MDVR',
+            'ELEMENTOS - Cámara Operador',
+            'ACCESORIOS - Antena GPS',
+            'FALLA REPORTADA - No accesa',
+            'SOLUCIÓN - Se restablece conexión',
+            'CONFIGURACIÓN - Parámetros GPS',
+            'HARDWARE - Tarjeta SIM'
+        ];
+        const estados = ['abierto', 'espera', 'cerrado', 'resuelto', 'pendiente'];
+        const estadosTexto = ['Abierto', 'En Espera', 'Cerrado', 'Resuelto', 'Pendiente'];
         
-        // Eventos de los botones
-        document.getElementById('limpiar-filtros').addEventListener('click', function() {
-            document.getElementById('empresa').value = '';
-            document.getElementById('tecnico').value = '';
-            document.getElementById('tipo-falla').value = '';
-            document.getElementById('fecha-inicio').value = '';
-            document.getElementById('fecha-fin').value = '';
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarFechas();
+            inicializarDatos();
+            inicializarEventos();
+            actualizarVista();
+        });
+        
+        function inicializarFechas() {
+            const hoy = new Date();
+            const hace30Dias = new Date();
+            hace30Dias.setDate(hoy.getDate() - 30);
             
-            // Restaurar fechas por defecto
             document.getElementById('fecha-inicio').value = hace30Dias.toISOString().split('T')[0];
             document.getElementById('fecha-fin').value = hoy.toISOString().split('T')[0];
-            
-            alert('Filtros limpiados correctamente');
-        });
+        }
         
-        document.getElementById('generar-reporte').addEventListener('click', function() {
-            // Aquí normalmente se haría una llamada al servidor para generar el reporte
-            // Por ahora solo simulamos la acción
-            const empresa = document.getElementById('empresa').value;
-            const tecnico = document.getElementById('tecnico').value;
-            const tipoFalla = document.getElementById('tipo-falla').value;
-            const fechaInicio = document.getElementById('fecha-inicio').value;
-            const fechaFin = document.getElementById('fecha-fin').value;
+        function inicializarDatos() {
+            // Generar datos de ejemplo
+            ticketsData = [];
+            const hoy = new Date();
             
-            let mensaje = 'Generando reporte con los siguientes filtros:\n';
-            if (empresa) mensaje += `- Empresa: ${empresa}\n`;
-            if (tecnico) mensaje += `- Técnico: ${tecnico}\n`;
-            if (tipoFalla) mensaje += `- Tipo de falla: ${tipoFalla}\n`;
-            mensaje += `- Fecha inicio: ${fechaInicio || 'No especificada'}\n`;
-            mensaje += `- Fecha fin: ${fechaFin || 'No especificada'}`;
-            
-            alert(mensaje);
-        });
+            for (let i = 1; i <= 48; i++) {
+                const fecha = new Date();
+                fecha.setDate(hoy.getDate() - Math.floor(Math.random() * 30));
+                
+                const estadoIndex = Math.floor(Math.random() * estados.length);
+                const estado = estados[estadoIndex];
+                const estadoTexto = estadosTexto[estadoIndex];
+                
+                ticketsData.push({
+                    id: i,
+                    tecnico: tecnicos[Math.floor(Math.random() * tecnicos.length)],
+                    fecha: fecha.toLocaleDateString('es-ES'),
+                    empresa: empresas[Math.floor(Math.random() * empresas.length)],
+                    tiempo: (Math.random() * 5 + 0.5).toFixed(1) + 'h',
+                    tipoFalla: tiposFalla[Math.floor(Math.random() * tiposFalla.length)],
+                    estado: estado,
+                    estadoTexto: estadoTexto
+                });
+            }
+        }
         
-        document.getElementById('descargar-reporte').addEventListener('click', function() {
-            // Simulación de descarga de reporte
-            alert('Descargando reporte en formato Excel...\n\nEl archivo incluirá:\n- Técnico que atendió\n- Fecha de la incidencia\n- Empresa (Zoxo, Codiversa, Copesa, Sitraq, Corevsa)\n- Tiempo de resolución\n- Tipo de falla\n- Detalles completos de la incidencia');
+        function inicializarEventos() {
+            // Evento para limpiar filtros
+            document.getElementById('limpiar-filtros').addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+                
+                document.getElementById('empresa').value = '';
+                document.getElementById('tecnico').value = '';
+                document.getElementById('tipo-falla').value = '';
+                document.getElementById('estado').value = '';
+                
+                const hoy = new Date();
+                const hace30Dias = new Date();
+                hace30Dias.setDate(hoy.getDate() - 30);
+                
+                document.getElementById('fecha-inicio').value = hace30Dias.toISOString().split('T')[0];
+                document.getElementById('fecha-fin').value = hoy.toISOString().split('T')[0];
+                
+                actualizarVista();
+                showNotification('Filtros limpiados correctamente', 'success');
+            });
             
-            // Aquí normalmente se generaría y descargaría el archivo
-            // Por ejemplo: window.location.href = '/api/reporte/descargar?' + parametros;
-        });
+            // Evento para actualizar vista
+            document.getElementById('generar-reporte').addEventListener('click', function() {
+                this.classList.add('loading');
+                setTimeout(() => {
+                    this.classList.remove('loading');
+                    actualizarVista();
+                    showNotification('Vista actualizada con los filtros aplicados', 'success');
+                }, 500);
+            });
+            
+            // Evento para generar PDF
+            document.getElementById('generar-pdf').addEventListener('click', function() {
+                this.classList.add('loading');
+                setTimeout(() => {
+                    this.classList.remove('loading');
+                    generarReportePDF();
+                }, 500);
+            });
+            
+            // Evento para cerrar modal
+            document.getElementById('close-modal').addEventListener('click', function() {
+                document.getElementById('pdf-preview-modal').style.display = 'none';
+            });
+            
+            // Cerrar modal al hacer clic fuera
+            document.getElementById('pdf-preview-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            // Logo placeholder
+            const logoImg = document.querySelector('.logo-img');
+            const logoPlaceholder = document.getElementById('logo-placeholder');
+            
+            if (logoImg.complete && logoImg.naturalHeight !== 0) {
+                logoPlaceholder.style.display = 'none';
+            }
+            
+            logoImg.onerror = function() {
+                logoPlaceholder.style.display = 'flex';
+                this.style.display = 'none';
+            };
+        }
         
-        // Mejorar la experiencia de usuario en dispositivos móviles
-        if (window.innerWidth <= 768) {
-            document.querySelectorAll('.filter-control').forEach(control => {
-                control.addEventListener('focus', function() {
-                    this.style.fontSize = '16px'; // Previene el zoom en iOS
+        function actualizarVista() {
+            const filtros = obtenerFiltros();
+            const ticketsFiltrados = filtrarTickets(filtros);
+            
+            actualizarTabla(ticketsFiltrados);
+            actualizarEstadisticas(ticketsFiltrados);
+        }
+        
+        function obtenerFiltros() {
+            return {
+                empresa: document.getElementById('empresa').value,
+                tecnico: document.getElementById('tecnico').value,
+                tipoFalla: document.getElementById('tipo-falla').value,
+                estado: document.getElementById('estado').value,
+                fechaInicio: document.getElementById('fecha-inicio').value,
+                fechaFin: document.getElementById('fecha-fin').value
+            };
+        }
+        
+        function filtrarTickets(filtros) {
+            return ticketsData.filter(ticket => {
+                // Filtrar por empresa
+                if (filtros.empresa && !ticket.empresa.toLowerCase().includes(filtros.empresa.toLowerCase())) {
+                    return false;
+                }
+                
+                // Filtrar por técnico
+                if (filtros.tecnico) {
+                    const tecnicoKey = ticket.tecnico.toLowerCase().replace(' ', '_');
+                    if (tecnicoKey !== filtros.tecnico) return false;
+                }
+                
+                // Filtrar por tipo de falla
+                if (filtros.tipoFalla && !ticket.tipoFalla.toLowerCase().includes(filtros.tipoFalla.toLowerCase())) {
+                    return false;
+                }
+                
+                // Filtrar por estado
+                if (filtros.estado && ticket.estado !== filtros.estado) {
+                    return false;
+                }
+                
+                // Filtrar por fecha
+                if (filtros.fechaInicio || filtros.fechaFin) {
+                    const ticketFecha = new Date(ticket.fecha.split('/').reverse().join('-'));
+                    
+                    if (filtros.fechaInicio) {
+                        const fechaInicio = new Date(filtros.fechaInicio);
+                        if (ticketFecha < fechaInicio) return false;
+                    }
+                    
+                    if (filtros.fechaFin) {
+                        const fechaFin = new Date(filtros.fechaFin);
+                        fechaFin.setHours(23, 59, 59);
+                        if (ticketFecha > fechaFin) return false;
+                    }
+                }
+                
+                return true;
+            });
+        }
+        
+        function actualizarTabla(tickets) {
+            const tbody = document.getElementById('tickets-body');
+            tbody.innerHTML = '';
+            
+            tickets.forEach(ticket => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${ticket.tecnico}</td>
+                    <td>${ticket.fecha}</td>
+                    <td><span class="empresa-badge">${ticket.empresa}</span></td>
+                    <td>${ticket.tiempo}</td>
+                    <td>${ticket.tipoFalla}</td>
+                    <td><span class="status-badge status-${ticket.estado}">${ticket.estadoTexto}</span></td>
+                    <td>
+                        <select class="status-select" data-ticket="${ticket.id}" data-tooltip="Cambiar estado del ticket">
+                            <option value="abierto" ${ticket.estado === 'abierto' ? 'selected' : ''}>Abierto</option>
+                            <option value="espera" ${ticket.estado === 'espera' ? 'selected' : ''}>En Espera</option>
+                            <option value="cerrado" ${ticket.estado === 'cerrado' ? 'selected' : ''}>Cerrado</option>
+                            <option value="resuelto" ${ticket.estado === 'resuelto' ? 'selected' : ''}>Resuelto</option>
+                            <option value="pendiente" ${ticket.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
+                        </select>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Agregar eventos a los selectores de estado
+            document.querySelectorAll('.status-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const ticketId = parseInt(this.dataset.ticket);
+                    const nuevoEstado = this.value;
+                    cambiarEstadoTicket(ticketId, nuevoEstado);
+                });
+            });
+            
+            // Efectos hover en filas
+            document.querySelectorAll('#tickets-body tr').forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.01)';
+                    this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
                 });
             });
         }
         
-        // Estilo para el placeholder en navegadores modernos
-        document.querySelectorAll('.filter-control').forEach(input => {
-            input.addEventListener('focus', function() {
-                this.style.color = 'white';
+        function actualizarEstadisticas(tickets) {
+            // Actualizar contador total
+            document.getElementById('total-incidencias').textContent = tickets.length;
+            
+            // Contar por estado
+            const abiertas = tickets.filter(t => t.estado === 'abierto').length;
+            const enEspera = tickets.filter(t => t.estado === 'espera').length;
+            const cerradas = tickets.filter(t => t.estado === 'cerrado').length;
+            const resueltas = tickets.filter(t => t.estado === 'resuelto').length;
+            const pendientes = tickets.filter(t => t.estado === 'pendiente').length;
+            
+            // Actualizar contadores
+            document.getElementById('abiertas-count').textContent = abiertas;
+            document.getElementById('espera-count').textContent = enEspera;
+            document.getElementById('cerradas-count').textContent = cerradas + resueltas;
+            
+            // Calcular tiempo promedio
+            if (tickets.length > 0) {
+                const totalTiempo = tickets.reduce((sum, ticket) => {
+                    return sum + parseFloat(ticket.tiempo);
+                }, 0);
+                const promedio = (totalTiempo / tickets.length).toFixed(1);
+                document.querySelector('.summary-card:nth-child(4) h3').textContent = promedio + 'h';
+            }
+        }
+        
+        function cambiarEstadoTicket(ticketId, nuevoEstado) {
+            const ticket = ticketsData.find(t => t.id === ticketId);
+            if (ticket) {
+                const estadoAnterior = ticket.estado;
+                ticket.estado = nuevoEstado;
+                ticket.estadoTexto = nuevoEstado.charAt(0).toUpperCase() + nuevoEstado.slice(1);
+                
+                // Actualizar vista
+                actualizarVista();
+                
+                // Mostrar notificación
+                showNotification(`Ticket #${ticketId} cambió de ${estadoAnterior} a ${nuevoEstado}`, 'success');
+            }
+        }
+        
+        function generarReportePDF() {
+            const filtros = obtenerFiltros();
+            const ticketsFiltrados = filtrarTickets(filtros);
+            
+            // Mostrar modal con vista previa
+            mostrarVistaPreviaPDF(ticketsFiltrados, filtros);
+            
+            // Generar PDF real
+            setTimeout(() => {
+                generarPDFReal(ticketsFiltrados, filtros);
+            }, 1000);
+        }
+        
+        function mostrarVistaPreviaPDF(tickets, filtros) {
+            const modal = document.getElementById('pdf-preview-modal');
+            const content = document.getElementById('pdf-content');
+            
+            // Limpiar gráficos anteriores
+            chartInstances.forEach(chart => chart.destroy());
+            chartInstances = [];
+            
+            // Generar contenido HTML para la vista previa
+            content.innerHTML = generarContenidoPDF(tickets, filtros);
+            
+            // Mostrar modal
+            modal.style.display = 'flex';
+            
+            // Inicializar gráficos
+            inicializarGraficosPDF();
+        }
+        
+        function generarContenidoPDF(tickets, filtros) {
+            const fechaGeneracion = new Date().toLocaleString('es-ES');
+            const totalTickets = tickets.length;
+            
+            // Estadísticas por empresa
+            const statsPorEmpresa = {};
+            empresas.forEach(empresa => {
+                const ticketsEmpresa = tickets.filter(t => t.empresa === empresa);
+                statsPorEmpresa[empresa] = {
+                    total: ticketsEmpresa.length,
+                    abiertos: ticketsEmpresa.filter(t => t.estado === 'abierto').length,
+                    enEspera: ticketsEmpresa.filter(t => t.estado === 'espera').length,
+                    cerrados: ticketsEmpresa.filter(t => t.estado === 'cerrado').length,
+                    resueltos: ticketsEmpresa.filter(t => t.estado === 'resuelto').length,
+                    pendientes: ticketsEmpresa.filter(t => t.estado === 'pendiente').length
+                };
             });
-            input.addEventListener('blur', function() {
-                if (!this.value) {
-                    this.style.color = 'rgba(255,255,255,0.6)';
+            
+            // Estadísticas por técnico
+            const statsPorTecnico = {};
+            tecnicos.forEach(tecnico => {
+                const ticketsTecnico = tickets.filter(t => t.tecnico === tecnico);
+                if (ticketsTecnico.length > 0) {
+                    statsPorTecnico[tecnico] = {
+                        total: ticketsTecnico.length,
+                        tiempoPromedio: (ticketsTecnico.reduce((sum, t) => sum + parseFloat(t.tiempo), 0) / ticketsTecnico.length).toFixed(1),
+                        eficiencia: ((ticketsTecnico.filter(t => t.estado === 'cerrado' || t.estado === 'resuelto').length / ticketsTecnico.length) * 100).toFixed(1)
+                    };
                 }
             });
-        });
+            
+            let html = `
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: var(--primary-blue); margin-bottom: 10px;">Reporte de Incidencias</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 5px;"><strong>Fecha de generación:</strong> ${fechaGeneracion}</p>
+                    <p style="color: var(--text-secondary); margin-bottom: 5px;"><strong>Tickets encontrados:</strong> ${totalTickets}</p>
+                    ${filtros.empresa ? `<p style="color: var(--text-secondary); margin-bottom: 5px;"><strong>Empresa filtrada:</strong> ${filtros.empresa}</p>` : ''}
+                    ${filtros.fechaInicio ? `<p style="color: var(--text-secondary); margin-bottom: 5px;"><strong>Periodo:</strong> ${filtros.fechaInicio} al ${filtros.fechaFin}</p>` : ''}
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">${totalTickets}</div>
+                        <div class="metric-label">Total Incidencias</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${tickets.filter(t => t.estado === 'abierto').length}</div>
+                        <div class="metric-label">Abiertas</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${tickets.filter(t => t.estado === 'espera').length}</div>
+                        <div class="metric-label">En Espera</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${tickets.filter(t => t.estado === 'cerrado' || t.estado === 'resuelto').length}</div>
+                        <div class="metric-label">Resueltas/Cerradas</div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Distribución por Empresa</h3>
+                    <canvas id="chartEmpresas" width="400" height="200"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Rendimiento de Técnicos</h3>
+                    <canvas id="chartTecnicos" width="400" height="200"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-chart-line"></i> Evolución de Estados</h3>
+                    <canvas id="chartEstados" width="400" height="200"></canvas>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h3 style="color: var(--primary-blue); margin-bottom: 15px; border-bottom: 2px solid var(--accent-color); padding-bottom: 5px;">
+                        <i class="fas fa-table"></i> Detalle de Incidencias
+                    </h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                        <thead>
+                            <tr style="background: linear-gradient(135deg, rgba(26, 41, 128, 0.1) 0%, rgba(171, 9, 106, 0.1) 100%);">
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--accent-color);">Técnico</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--accent-color);">Fecha</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--accent-color);">Empresa</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--accent-color);">Tiempo</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--accent-color);">Tipo de Falla</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--accent-color);">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            // Limitar a 15 tickets para el PDF
+            const ticketsMostrar = tickets.slice(0, 15);
+            ticketsMostrar.forEach(ticket => {
+                html += `
+                    <tr style="border-bottom: 1px solid rgba(171, 9, 106, 0.1);">
+                        <td style="padding: 8px 10px;">${ticket.tecnico}</td>
+                        <td style="padding: 8px 10px;">${ticket.fecha}</td>
+                        <td style="padding: 8px 10px;">${ticket.empresa}</td>
+                        <td style="padding: 8px 10px;">${ticket.tiempo}</td>
+                        <td style="padding: 8px 10px;">${ticket.tipoFalla}</td>
+                        <td style="padding: 8px 10px;">
+                            <span style="display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: white; 
+                                background: linear-gradient(135deg, ${getEstadoColor(ticket.estado)});">
+                                ${ticket.estadoTexto}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                    ${tickets.length > 15 ? `<p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9rem;">Mostrando 15 de ${tickets.length} tickets. Descarga el PDF para ver la lista completa.</p>` : ''}
+                </div>
+                
+                <div style="margin-top: 30px; padding: 15px; background: rgba(171, 9, 106, 0.05); border-radius: 8px; border-left: 4px solid var(--accent-color);">
+                    <h4 style="color: var(--primary-blue); margin-bottom: 10px;"><i class="fas fa-chart-bar"></i> Métricas por Empresa</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">
+            `;
+            
+            // Métricas por empresa
+            Object.entries(statsPorEmpresa).forEach(([empresa, stats]) => {
+                if (stats.total > 0) {
+                    html += `
+                        <div style="background: white; padding: 10px; border-radius: 6px; border: 1px solid rgba(171, 9, 106, 0.1);">
+                            <strong style="color: var(--primary-blue);">${empresa}</strong><br>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">
+                                Total: ${stats.total} | 
+                                Abiertos: ${stats.abiertos} | 
+                                Cerrados: ${stats.cerrados}
+                            </span>
+                        </div>
+                    `;
+                }
+            });
+            
+            html += `
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; text-align: center; border-top: 2px solid var(--accent-color);">
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                        Reporte generado automáticamente por el Sistema de Gestión de Incidencias<br>
+                        © ${new Date().getFullYear()} - Todos los derechos reservados
+                    </p>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        function getEstadoColor(estado) {
+            const colores = {
+                'abierto': '#e74c3c, #c0392b',
+                'espera': '#f39c12, #f1c40f',
+                'cerrado': '#27ae60, #2ecc71',
+                'resuelto': '#27ae60, #2ecc71',
+                'pendiente': '#f39c12, #f1c40f'
+            };
+            return colores[estado] || '#3498db, #2980b9';
+        }
+        
+        function inicializarGraficosPDF() {
+            // Obtener datos para gráficos
+            const filtros = obtenerFiltros();
+            const ticketsFiltrados = filtrarTickets(filtros);
+            
+            // Gráfico 1: Distribución por empresa
+            const empresasData = {};
+            ticketsFiltrados.forEach(ticket => {
+                empresasData[ticket.empresa] = (empresasData[ticket.empresa] || 0) + 1;
+            });
+            
+            const ctx1 = document.getElementById('chartEmpresas').getContext('2d');
+            const chart1 = new Chart(ctx1, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(empresasData),
+                    datasets: [{
+                        data: Object.values(empresasData),
+                        backgroundColor: [
+                            '#1a2980', '#26d0ce', '#AB096A', '#7b112f', '#2c3e50'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            chartInstances.push(chart1);
+            
+            // Gráfico 2: Rendimiento de técnicos
+            const tecnicosData = {};
+            ticketsFiltrados.forEach(ticket => {
+                if (!tecnicosData[ticket.tecnico]) {
+                    tecnicosData[ticket.tecnico] = {
+                        total: 0,
+                        resueltos: 0,
+                        tiempo: 0
+                    };
+                }
+                tecnicosData[ticket.tecnico].total++;
+                tecnicosData[ticket.tecnico].tiempo += parseFloat(ticket.tiempo);
+                if (ticket.estado === 'cerrado' || ticket.estado === 'resuelto') {
+                    tecnicosData[ticket.tecnico].resueltos++;
+                }
+            });
+            
+            const ctx2 = document.getElementById('chartTecnicos').getContext('2d');
+            const chart2 = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(tecnicosData),
+                    datasets: [
+                        {
+                            label: 'Tickets Resueltos',
+                            data: Object.values(tecnicosData).map(d => d.resueltos),
+                            backgroundColor: '#AB096A',
+                            borderColor: '#8A0755',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Tiempo Promedio (h)',
+                            data: Object.values(tecnicosData).map(d => (d.tiempo / d.total).toFixed(1)),
+                            backgroundColor: '#26d0ce',
+                            borderColor: '#1a9c9a',
+                            borderWidth: 1,
+                            type: 'line',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Tickets Resueltos'
+                            }
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Tiempo Promedio (h)'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    }
+                }
+            });
+            chartInstances.push(chart2);
+            
+            // Gráfico 3: Estados de tickets
+            const estadosData = {};
+            ticketsFiltrados.forEach(ticket => {
+                estadosData[ticket.estadoTexto] = (estadosData[ticket.estadoTexto] || 0) + 1;
+            });
+            
+            const ctx3 = document.getElementById('chartEstados').getContext('2d');
+            const chart3 = new Chart(ctx3, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(estadosData),
+                    datasets: [{
+                        data: Object.values(estadosData),
+                        backgroundColor: [
+                            '#e74c3c', // Abierto
+                            '#f39c12', // En Espera
+                            '#27ae60', // Cerrado
+                            '#2ecc71', // Resuelto
+                            '#f1c40f'  // Pendiente
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            chartInstances.push(chart3);
+        }
+        
+        function generarPDFReal(tickets, filtros) {
+            // Crear PDF con jsPDF
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            // Configuración inicial
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            let yPos = 20;
+            
+            // Título
+            pdf.setFontSize(20);
+            pdf.setTextColor(26, 41, 128); // primary-blue
+            pdf.text('REPORTE DE INCIDENCIAS', pageWidth / 2, yPos, { align: 'center' });
+            yPos += 10;
+            
+            // Fecha de generación
+            pdf.setFontSize(10);
+            pdf.setTextColor(102, 102, 102); // text-secondary
+            pdf.text(`Generado: ${new Date().toLocaleString('es-ES')}`, pageWidth / 2, yPos, { align: 'center' });
+            yPos += 15;
+            
+            // Filtros aplicados
+            pdf.setFontSize(12);
+            pdf.setTextColor(51, 51, 51); // text-primary
+            pdf.text('Filtros Aplicados:', 20, yPos);
+            yPos += 8;
+            
+            pdf.setFontSize(10);
+            let filtrosTexto = [];
+            if (filtros.empresa) filtrosTexto.push(`Empresa: ${filtros.empresa}`);
+            if (filtros.tecnico) filtrosTexto.push(`Técnico: ${filtros.tecnico}`);
+            if (filtros.tipoFalla) filtrosTexto.push(`Tipo de Falla: ${filtros.tipoFalla}`);
+            if (filtros.estado) filtrosTexto.push(`Estado: ${filtros.estado}`);
+            if (filtros.fechaInicio) filtrosTexto.push(`Periodo: ${filtros.fechaInicio} al ${filtros.fechaFin}`);
+            
+            if (filtrosTexto.length === 0) {
+                filtrosTexto.push('Sin filtros aplicados');
+            }
+            
+            filtrosTexto.forEach(texto => {
+                pdf.text(`• ${texto}`, 25, yPos);
+                yPos += 6;
+            });
+            
+            yPos += 10;
+            
+            // Métricas principales
+            pdf.setFontSize(14);
+            pdf.setTextColor(171, 9, 106); // accent-color
+            pdf.text('Métricas Principales', 20, yPos);
+            yPos += 10;
+            
+            const totalTickets = tickets.length;
+            const abiertas = tickets.filter(t => t.estado === 'abierto').length;
+            const enEspera = tickets.filter(t => t.estado === 'espera').length;
+            const cerradas = tickets.filter(t => t.estado === 'cerrado' || t.estado === 'resuelto').length;
+            
+            // Dibujar métricas
+            pdf.setFontSize(11);
+            pdf.setTextColor(51, 51, 51);
+            
+            const metricWidth = (pageWidth - 40) / 4;
+            const metrics = [
+                { label: 'Total', value: totalTickets, color: [26, 41, 128] },
+                { label: 'Abiertas', value: abiertas, color: [231, 76, 60] },
+                { label: 'En Espera', value: enEspera, color: [243, 156, 18] },
+                { label: 'Cerradas', value: cerradas, color: [39, 174, 96] }
+            ];
+            
+            metrics.forEach((metric, index) => {
+                const xPos = 20 + (index * metricWidth);
+                
+                // Fondo
+                pdf.setFillColor(245, 245, 245);
+                pdf.rect(xPos, yPos, metricWidth - 5, 20, 'F');
+                
+                // Borde
+                pdf.setDrawColor(171, 9, 106, 50);
+                pdf.rect(xPos, yPos, metricWidth - 5, 20);
+                
+                // Valor
+                pdf.setFontSize(16);
+                pdf.setTextColor(...metric.color);
+                pdf.text(metric.value.toString(), xPos + (metricWidth - 5) / 2, yPos + 10, { align: 'center' });
+                
+                // Etiqueta
+                pdf.setFontSize(9);
+                pdf.setTextColor(102, 102, 102);
+                pdf.text(metric.label, xPos + (metricWidth - 5) / 2, yPos + 16, { align: 'center' });
+            });
+            
+            yPos += 30;
+            
+            // Verificar si hay espacio para más contenido
+            if (yPos > 250) {
+                pdf.addPage();
+                yPos = 20;
+            }
+            
+            // Tabla de tickets
+            pdf.setFontSize(14);
+            pdf.setTextColor(171, 9, 106);
+            pdf.text('Detalle de Incidencias', 20, yPos);
+            yPos += 10;
+            
+            // Cabecera de tabla
+            pdf.setFontSize(9);
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFillColor(26, 41, 128);
+            pdf.rect(20, yPos, pageWidth - 40, 8, 'F');
+            
+            const columnWidths = [30, 25, 25, 20, 45, 25];
+            const headers = ['Técnico', 'Fecha', 'Empresa', 'Tiempo', 'Tipo Falla', 'Estado'];
+            
+            let xPos = 22;
+            headers.forEach((header, index) => {
+                pdf.text(header, xPos, yPos + 6);
+                xPos += columnWidths[index];
+            });
+            
+            yPos += 10;
+            
+            // Filas de la tabla
+            pdf.setFontSize(8);
+            pdf.setTextColor(51, 51, 51);
+            
+            // Limitar a 20 tickets para el PDF
+            const ticketsParaPDF = tickets.slice(0, 20);
+            
+            ticketsParaPDF.forEach((ticket, index) => {
+                if (yPos > 270) {
+                    pdf.addPage();
+                    yPos = 20;
+                }
+                
+                // Fondo alternado
+                if (index % 2 === 0) {
+                    pdf.setFillColor(250, 250, 250);
+                    pdf.rect(20, yPos, pageWidth - 40, 7, 'F');
+                }
+                
+                // Datos
+                xPos = 22;
+                const rowData = [
+                    ticket.tecnico.substring(0, 12),
+                    ticket.fecha,
+                    ticket.empresa.substring(0, 8),
+                    ticket.tiempo,
+                    ticket.tipoFalla.substring(0, 25),
+                    ticket.estadoTexto
+                ];
+                
+                rowData.forEach((data, dataIndex) => {
+                    pdf.text(data, xPos, yPos + 5);
+                    xPos += columnWidths[dataIndex];
+                });
+                
+                yPos += 7;
+            });
+            
+            // Pie de página
+            pdf.addPage();
+            yPos = 20;
+            
+            // Métricas por empresa
+            pdf.setFontSize(14);
+            pdf.setTextColor(171, 9, 106);
+            pdf.text('Métricas por Empresa', 20, yPos);
+            yPos += 10;
+            
+            const statsPorEmpresa = {};
+            empresas.forEach(empresa => {
+                const ticketsEmpresa = tickets.filter(t => t.empresa === empresa);
+                if (ticketsEmpresa.length > 0) {
+                    statsPorEmpresa[empresa] = {
+                        total: ticketsEmpresa.length,
+                        abiertos: ticketsEmpresa.filter(t => t.estado === 'abierto').length,
+                        cerrados: ticketsEmpresa.filter(t => t.estado === 'cerrado' || t.estado === 'resuelto').length
+                    };
+                }
+            });
+            
+            pdf.setFontSize(10);
+            Object.entries(statsPorEmpresa).forEach(([empresa, stats], index) => {
+                if (yPos > 270) {
+                    pdf.addPage();
+                    yPos = 20;
+                }
+                
+                pdf.setTextColor(51, 51, 51);
+                pdf.text(`${empresa}:`, 25, yPos);
+                
+                pdf.setTextColor(102, 102, 102);
+                pdf.text(`Total: ${stats.total} | Abiertos: ${stats.abiertos} | Cerrados: ${stats.cerrados}`, 80, yPos);
+                
+                yPos += 7;
+            });
+            
+            yPos += 10;
+            
+            // Métricas por técnico
+            pdf.setFontSize(14);
+            pdf.setTextColor(171, 9, 106);
+            pdf.text('Rendimiento por Técnico', 20, yPos);
+            yPos += 10;
+            
+            const statsPorTecnico = {};
+            tickets.forEach(ticket => {
+                if (!statsPorTecnico[ticket.tecnico]) {
+                    statsPorTecnico[ticket.tecnico] = {
+                        total: 0,
+                        tiempo: 0,
+                        resueltos: 0
+                    };
+                }
+                statsPorTecnico[ticket.tecnico].total++;
+                statsPorTecnico[ticket.tecnico].tiempo += parseFloat(ticket.tiempo);
+                if (ticket.estado === 'cerrado' || ticket.estado === 'resuelto') {
+                    statsPorTecnico[ticket.tecnico].resueltos++;
+                }
+            });
+            
+            pdf.setFontSize(10);
+            Object.entries(statsPorTecnico).forEach(([tecnico, stats]) => {
+                if (yPos > 270) {
+                    pdf.addPage();
+                    yPos = 20;
+                }
+                
+                const eficiencia = ((stats.resueltos / stats.total) * 100).toFixed(1);
+                const tiempoPromedio = (stats.tiempo / stats.total).toFixed(1);
+                
+                pdf.setTextColor(51, 51, 51);
+                pdf.text(`${tecnico}:`, 25, yPos);
+                
+                pdf.setTextColor(102, 102, 102);
+                pdf.text(`Tickets: ${stats.total} | Eficiencia: ${eficiencia}% | Tiempo Prom: ${tiempoPromedio}h`, 80, yPos);
+                
+                yPos += 7;
+            });
+            
+            // Pie de página final
+            pdf.addPage();
+            yPos = 20;
+            
+            pdf.setFontSize(16);
+            pdf.setTextColor(26, 41, 128);
+            pdf.text('Resumen Ejecutivo', pageWidth / 2, yPos, { align: 'center' });
+            yPos += 15;
+            
+            pdf.setFontSize(11);
+            pdf.setTextColor(51, 51, 51);
+            
+            const resumen = [
+                `• Total de incidencias analizadas: ${totalTickets}`,
+                `• Incidencias abiertas: ${abiertas} (${totalTickets > 0 ? ((abiertas/totalTickets)*100).toFixed(1) : 0}%)`,
+                `• Incidencias en espera: ${enEspera} (${totalTickets > 0 ? ((enEspera/totalTickets)*100).toFixed(1) : 0}%)`,
+                `• Incidencias resueltas: ${cerradas} (${totalTickets > 0 ? ((cerradas/totalTickets)*100).toFixed(1) : 0}%)`,
+                `• Tiempo promedio de resolución: ${totalTickets > 0 ? (tickets.reduce((sum, t) => sum + parseFloat(t.tiempo), 0) / totalTickets).toFixed(1) : 0} horas`
+            ];
+            
+            resumen.forEach(texto => {
+                pdf.text(texto, 30, yPos);
+                yPos += 8;
+            });
+            
+            yPos += 10;
+            
+            // Recomendaciones
+            pdf.setFontSize(14);
+            pdf.setTextColor(171, 9, 106);
+            pdf.text('Recomendaciones', 20, yPos);
+            yPos += 10;
+            
+            pdf.setFontSize(11);
+            pdf.setTextColor(51, 51, 51);
+            
+            const recomendaciones = [
+                '1. Priorizar incidencias abiertas con mayor tiempo de espera',
+                '2. Revisar tickets en espera de refacción',
+                '3. Analizar tendencias por tipo de falla',
+                '4. Evaluar carga de trabajo por técnico',
+                '5. Optimizar tiempos de respuesta'
+            ];
+            
+            recomendaciones.forEach(texto => {
+                pdf.text(texto, 25, yPos);
+                yPos += 8;
+            });
+            
+            // Firma
+            yPos = 250;
+            pdf.setFontSize(10);
+            pdf.setTextColor(102, 102, 102);
+            pdf.text('________________________________', pageWidth / 2, yPos, { align: 'center' });
+            pdf.text('Administrador del Sistema', pageWidth / 2, yPos + 7, { align: 'center' });
+            pdf.text(`Reporte generado el ${new Date().toLocaleDateString('es-ES')}`, pageWidth / 2, yPos + 14, { align: 'center' });
+            
+            // Guardar PDF
+            const nombreArchivo = `reporte-incidencias-${new Date().toISOString().split('T')[0]}.pdf`;
+            pdf.save(nombreArchivo);
+            
+            // Mostrar confirmación
+            showNotification('✅ Reporte PDF generado y descargado exitosamente', 'success');
+        }
+        
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                max-width: 350px;
+            `;
+            
+            if (type === 'success') {
+                notification.style.background = 'linear-gradient(135deg, var(--accent-color), #8A0755)';
+                notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            } else {
+                notification.style.background = 'linear-gradient(135deg, #3498db, var(--accent-color))';
+                notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+            }
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        // Animación CSS para notificaciones
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
