@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio de Sesión | Admin Incidencias</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { 
+            box-sizing: border-box; 
+            font-family: "Arial", Arial, serif; 
+        }
+
+        body {
+            height: 100vh;
+            margin: 0;
+            background: #122db3;
+            background: radial-gradient(circle, rgba(18, 45, 179, 1) 0%, rgba(19, 25, 56, 1) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: white;
+            width: 380px;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+            text-align: center;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-container img {
+            max-width: 250px;
+            max-height: 200px;
+            object-fit: contain;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background-color: #122db3;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: #2980b9;
+        }
+
+        /* ESTILO NUEVO PARA EL BOTÓN DE REGISTRO */
+        .register-link {
+            margin-top: 20px;
+            display: block;
+            text-decoration: none;
+            color: #122db3;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+        
+        .register-link:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="logo-container">
+            <img src="Sistema de incidencias.png" alt="Logo Empresa" 
+            width="400px" height="auto" style="max-width: 100%;"
+            onerror="this.style.display='none'; document.getElementById('logo-placeholder').style.display='block'">
+            <div id="logo-placeholder" style="display:none; font-size: 2rem; color: #122db3;">
+                <i class="fas fa-tools"></i> Admin
+            </div>
+        </div>
+
+        <div class="error" id="error-msg">
+            Usuario o contraseña incorrectos
+        </div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label>Correo electrónico</label>
+                <input type="email" id="email" placeholder="admin@incidencias.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="password" placeholder="********" required>
+            </div>
+
+            <button type="submit" class="btn-login">
+                <i class="fas fa-sign-in-alt"></i> Ingresar
+            </button>
+            
+            <a href="registro.html" class="register-link">
+                ¿No tienes cuenta? Regístrate aquí
+            </a>
+        </form>
+
+        <div class="footer-text">
+            © 2025 Panel de Gestión
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("login-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            // Validación simple
+            if (email === "admin@incidencias.com" && password === "admin123") {
+                // Redirigir al Dashboard principal (asumiendo que se llama index.html como en el paso anterior)
+                window.location.href = "index.html";
+            } else {
+                document.getElementById("error-msg").style.display = "block";
+            }
+        });
+    </script>
+
+</body>
+</html>
